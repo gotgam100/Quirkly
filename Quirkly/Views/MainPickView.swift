@@ -65,7 +65,7 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle("Quirkly : 나의 엉뚱일지")
+            .navigationTitle("QUIRKLY : 나의 엉뚱일지")
             .navigationBarTitleDisplayMode(.large)
             .task {
                 if !hasLoadedInitial {
@@ -147,7 +147,7 @@ struct MainPickView: View {
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.7))
                         .multilineTextAlignment(.center)
                     
-                    Text(isKorean ? "하루에 하나만 뽑을 수 있어요. 단, 패스 3번 가능." : "You can pick only one per day. Up to 3 passes allowed.")
+                    Text(isKorean ? "하루에 하나만 뽑을 수 있어요.\n단, 패스 3번 가능." : "You can pick only one per day.\nUp to 3 passes allowed.")
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
                 }
@@ -294,6 +294,9 @@ struct MainPickView: View {
     // MARK: - 로직 함수들
 
     private func tapButton(_ scale: Binding<CGFloat>) {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+
         withAnimation(.spring(response: 0.12, dampingFraction: 0.7)) { scale.wrappedValue = 0.90 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
             withAnimation(.spring(response: 0.22, dampingFraction: 0.75)) { scale.wrappedValue = 1.0 }
@@ -372,7 +375,8 @@ struct MainPickView: View {
         modelContext.insert(record)
         try? modelContext.save()
 
-        if todayPassed == 0 {
+        // 패스가 0/3일 때만 깜빡임
+        if todayPassed == 0 && todayPassed < 3 {
             flashPassButton()
         }
 

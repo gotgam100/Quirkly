@@ -128,8 +128,8 @@ struct HistoryView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .padding(.top, 20)
-        .padding(.bottom, 12)
+        .padding(.top, 32)
+        .padding(.bottom, 8)
         .background(Color.quirklyBgLight)
     }
 
