@@ -44,9 +44,6 @@ struct SettingsView: View {
                     // 알림
                     notificationSection
 
-                    // 나의 기록
-                    statsSection
-
                     // 함께하기
                     ideaSection
 
@@ -237,61 +234,10 @@ struct SettingsView: View {
         showCoffeeAlert = true
     }
 
-    // MARK: - 동기화
-    
+    // MARK: - 데이터 연동
+
     private var syncSection: some View {
         Section {
-            Button {
-                Task {
-                    await repository.syncFromGoogleSheets(modelContext: modelContext)
-                    if repository.lastError == nil {
-                        settings.lastSyncDate = Date()
-                        showSyncSuccess = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            showSyncSuccess = false
-                        }
-                    }
-                }
-            } label: {
-                HStack {
-                    Text(isKorean ? "📡 엉뚱한 일 새로고침" : "📡 Refresh Quirky Tasks")
-                        .foregroundStyle(Color.quirklyTextDark)
-                    Spacer()
-                    if repository.isLoading {
-                        ProgressView()
-                    } else {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundStyle(Color.quirklyTextDark)
-                    }
-                }
-            }
-            if let error = repository.lastError {
-                Text("⚠️ \(error)")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-
-            if showSyncSuccess {
-                Text(isKorean ? "✅ \(repository.taskCount)개 미션 로드 완료!" : "✅ \(repository.taskCount) missions loaded!")
-                    .font(.caption)
-                    .foregroundStyle(Color.quirklyGreen)
-            }
-
-            if let lastSync = settings.lastSyncDate {
-                HStack {
-                    Text(isKorean ? "마지막 새로고침 (미션)" : "Last Tasks Refresh")
-                        .font(.caption)
-                        .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
-                    Spacer()
-                    Text(lastSync, style: .time)
-                        .font(.caption)
-                        .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
-                }
-            }
-
-            Divider()
-                .padding(.vertical, 8)
-
             HStack(spacing: 12) {
                 Button {
                     exportRecords()
@@ -323,7 +269,6 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.top, 12)
 
             Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
                 .font(.caption)
@@ -341,9 +286,6 @@ struct SettingsView: View {
                     .foregroundStyle(.red)
             }
 
-            Divider()
-                .padding(.vertical, 8)
-
             Button(role: .destructive) {
                 showResetAlert = true
             } label: {
@@ -355,17 +297,6 @@ struct SettingsView: View {
             }
         } header: {
             Text(isKorean ? "데이터 연동" : "Data & Sync")
-        }
-        .listRowBackground(Color.quirkySurface.opacity(0.5))
-    }
-    
-    // MARK: - 통계
-
-    private var statsSection: some View {
-        Section {
-            EmptyView()
-        } header: {
-            Text(isKorean ? "나의 기록" : "My Stats")
         }
         .listRowBackground(Color.quirkySurface.opacity(0.5))
     }
