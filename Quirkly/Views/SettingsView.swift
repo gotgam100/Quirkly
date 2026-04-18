@@ -480,10 +480,6 @@ struct SettingsView: View {
 
             try modelContext.save()
             exportError = nil
-            showExportSuccess = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                showExportSuccess = false
-            }
             updateStreak()
         } catch {
             exportError = isKorean ? "가져오기 실패: \(error.localizedDescription)" : "Import failed: \(error.localizedDescription)"
