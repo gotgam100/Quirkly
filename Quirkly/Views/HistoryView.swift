@@ -104,7 +104,7 @@ struct HistoryView: View {
                     .zIndex(1)
                 }
             }
-            .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
+            .navigationTitle(Text(isKorean ? "나의 엉뚱한 기록" : "My Quirky History").bold())
             .navigationBarTitleDisplayMode(.large)
             .task { updateStreak() }
         }
@@ -133,10 +133,10 @@ struct HistoryView: View {
             HStack {
                 Spacer()
                 Text(getTitleForStreak(streak))
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(.white)
-                    .padding(.horizontal, 22)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 10)
                     .background(
                         LinearGradient(colors: [Color.quirklyBlue, Color.quirklyPink], startPoint: .topLeading, endPoint: .bottomTrailing)
                     )

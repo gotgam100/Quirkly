@@ -127,9 +127,10 @@ struct QuirklyButtonStyle: ButtonStyle {
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(Color.quirklyTextDark, lineWidth: 2.5)
             )
-            .scaleEffect(configuration.isPressed ? 0.85 : 1.0)
-            .brightness(configuration.isPressed ? -0.15 : 0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.6), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.80 : 1.0)
+            .brightness(configuration.isPressed ? -0.20 : 0)
+            .opacity(configuration.isPressed ? 0.85 : 1.0)
+            .animation(.spring(response: 0.15, dampingFraction: 0.5), value: configuration.isPressed)
     }
 }
 
