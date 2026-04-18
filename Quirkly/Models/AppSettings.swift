@@ -76,6 +76,7 @@ final class AppSettings {
         static let iCloudSyncEnabled = "quirkly_icloud_sync"
         static let currentTaskId = "quirkly_current_task_id"
         static let currentTaskDate = "quirkly_current_task_date"
+        static let isTaskDecided = "quirkly_is_task_decided"
     }
     
     // MARK: - Properties
@@ -116,6 +117,10 @@ final class AppSettings {
         didSet { defaults.set(currentTaskDate, forKey: Keys.currentTaskDate) }
     }
 
+    var isTaskDecided: Bool {
+        didSet { defaults.set(isTaskDecided, forKey: Keys.isTaskDecided) }
+    }
+
     // MARK: - Init
 
     init() {
@@ -128,6 +133,7 @@ final class AppSettings {
         self.iCloudSyncEnabled = defaults.object(forKey: Keys.iCloudSyncEnabled) == nil ? false : defaults.bool(forKey: Keys.iCloudSyncEnabled)
         self.currentTaskId = defaults.object(forKey: Keys.currentTaskId) == nil ? 0 : defaults.integer(forKey: Keys.currentTaskId)
         self.currentTaskDate = defaults.object(forKey: Keys.currentTaskDate) as? Date
+        self.isTaskDecided = defaults.object(forKey: Keys.isTaskDecided) == nil ? false : defaults.bool(forKey: Keys.isTaskDecided)
 
         // Init Notification Delegate automatically
         _ = NotificationManager.shared

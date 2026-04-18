@@ -248,7 +248,10 @@ struct MainPickView: View {
 
                         Button(action: {
                             tapButton($decideScale)
-                            withAnimation(.spring()) { isDecided = true }
+                            withAnimation(.spring()) {
+                                isDecided = true
+                                settings.isTaskDecided = true
+                            }
                         }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "checkmark.circle")
@@ -331,13 +334,16 @@ struct MainPickView: View {
             let descriptor = FetchDescriptor<QuirkyTask>(predicate: #Predicate { $0.taskId == taskId })
             if let task = try? modelContext.fetch(descriptor).first {
                 currentTask = task
+                isDecided = settings.isTaskDecided
             } else {
                 settings.currentTaskId = 0
                 settings.currentTaskDate = nil
+                settings.isTaskDecided = false
             }
         } else {
             settings.currentTaskId = 0
             settings.currentTaskDate = nil
+            settings.isTaskDecided = false
         }
     }
     
@@ -387,6 +393,7 @@ struct MainPickView: View {
                 isDecided = false
                 settings.currentTaskId = 0
                 settings.currentTaskDate = nil
+                settings.isTaskDecided = false
             }
         }
     }
@@ -448,6 +455,7 @@ struct MainPickView: View {
             isDecided = false
             settings.currentTaskId = 0
             settings.currentTaskDate = nil
+            settings.isTaskDecided = false
         }
     }
 }
