@@ -18,13 +18,13 @@ id,emoji,titleKo,titleEn,category,difficulty
 17,🌈,주변에서 무지개 색 순서대로 빨리 찾기,Find rainbow colors in order around you,observation,hard
 18,🚶,앞 사람 걸음에 발맞춰 걷기,Walk in sync with the person in front of you,observation,easy
 19,📦,편의점에서 가장 이상한 상품 이름 찾기,Find the strangest product names at convenience stores,observation,easy
-20,🔍,주변에서 글자 'ㅎ'이 들어간 간판 찾기,Find a sign with the letter 'ㅎ' nearby,observation,easy
+20,🔍,주변에서 글자 'ㅎ'이 들어간 간판 찾기,Find a sign with the letter 'H' nearby,observation,easy
 21,🏪,편의점에서 가장 싼물건 사기,Buy the cheapest item at a convenience store,observation,easy
 22,💡,발명 하나 하기,Invent something,creative,medium
 23,🎩,"누군가에게 '보스, 부르셨습니까?' 하고 말하기","Ask someone 'boss, did you call me?'",speech,medium
 24,📻,오늘 들은 노래를 라디오 DJ처럼 소개하기,Introduce a song you heard like a radio DJ,speech,easy
 25,🫡,군인처럼 말하기,Speak like a soldier,speech,easy
-26,🌟,"자기 이름 붙여서 말하기(예:""민기는 지금 배고파."")",Say ‘good job’ out loud to yourself,말하기 / speech,easy
+26,🌟,자기 이름 붙여서 말하기(예:'민기는 지금 배고파.'),Say 'good job' out loud to yourself,말하기 / speech,easy
 27,🧙,내일에 대한 예언 하나 하기,Make a prediction about tomorrow,speech,medium
 28,🤖,로봇 말투로 5분 대화하기,Have a 5-minute conversation in a robot tone,speech,hard
 29,🎤,혼자 집에서 시상식 수상소감 말하기,Give an acceptance speech alone at home,speech,easy
@@ -35,7 +35,7 @@ id,emoji,titleKo,titleEn,category,difficulty
 34,👋,모르는 사람에게 손 흔들어보기,Wave to a stranger,speech,medium
 35,💬,대화 중 갑자기 속담 하나 끼워넣기,Suddenly insert a proverb into conversation,speech,medium
 36,🗞️,아침에 '속보입니다!' 하고 가족에게 아무 말 전하기,Say 'breaking news!' and tell family anything,speech,easy
-37,🧐,그런데 말입니다...'하고 아무 의견 말하기,Saying anything with 'i think...',말하기 / speech,easy
+37,🧐,"“그런데 말입니다…""하고 아무 의견 말하기",Saying anything with 'i think...',말하기 / speech,easy
 38,🍚,몇 번의 숟가락질로 밥 다먹는지 세보기,Count how many spoonfuls to finish rice,food,easy
 39,🦶,두 번째 발가락만 움직여보기,Move only your second toe,food,easy
 40,🥢,숟가락 없이 젓가락만으로 밥 다 먹기,"Eat rice with only chopsticks, no spoon",food,medium
@@ -99,7 +99,7 @@ id,emoji,titleKo,titleEn,category,difficulty
 98,🫶,부모님에게 '어렸을 때 제가 제일 귀여웠을 때가 언제예요?' 물어보기,Ask parents 'when was I cutest as a kid?',social,easy
 99,🏠,이웃에게 외국어로 인사하기,Greet neighbors in a foreign language,social,easy
 100,👫,친구와 10초 동안 눈 마주치기 대결하기,Make eye contact with a friend for 10 seconds,social,easy
-101,🙈,누군가에게 '비밀인데...' 하고 아무 말이나 하기,Tell someone 'it's a secret...' and say anything,social,easy
+101,🙈,"“누군가에게 ‘비밀인데..."" 하고 아무 말이나 하기",Tell someone 'it's a secret...' and say anything,social,easy
 102,🏷️,옷 태그에 적힌 세탁 방법 소리내어 읽어보기,Read washing instructions on clothing tags aloud,solo,easy
 103,🧤,주머니 속 물건 만져서 뭔지 맞추기,Guess items in your pocket by touch,solo,easy
 104,🪥,이 닦을 때 반대 손으로 닦기,Brush your teeth with your non-dominant hand,solo,easy

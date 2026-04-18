@@ -1,6 +1,6 @@
 //
 //  AppIntent.swift
-//  GoofWidget
+//  QuirklyWidget
 //
 //  Created by BAEKMAC on 4/14/26.
 //
