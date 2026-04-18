@@ -292,10 +292,12 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
+            .listRowSeparator(.hidden)
 
             Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
                 .font(.caption)
                 .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+                .listRowSeparator(.hidden)
 
             if let error = exportError {
                 Text("⚠️ \(error)")
