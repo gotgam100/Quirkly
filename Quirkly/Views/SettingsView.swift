@@ -25,7 +25,6 @@ struct SettingsView: View {
     @State private var showMailComposer = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
     @State private var showFileImporter = false
-    @State private var showExportSuccess = false
     @State private var exportError: String?
     @State private var showCoffeeAlert = false
     @Environment(\.requestReview) var requestReview
@@ -298,12 +297,6 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
 
-            if showExportSuccess {
-                Text(isKorean ? "✅ 기록이 저장되었습니다." : "✅ Records exported successfully")
-                    .font(.caption)
-                    .foregroundStyle(Color.quirklyGreen)
-            }
-
             if let error = exportError {
                 Text("⚠️ \(error)")
                     .font(.caption)
@@ -439,11 +432,7 @@ struct SettingsView: View {
                     rootVC.present(activityVC, animated: true)
                 }
 
-                showExportSuccess = true
                 exportError = nil
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    showExportSuccess = false
-                }
             }
         } catch {
             exportError = isKorean ? "내보내기 실패: \(error.localizedDescription)" : "Export failed: \(error.localizedDescription)"
