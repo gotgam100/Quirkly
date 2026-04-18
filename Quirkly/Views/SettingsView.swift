@@ -171,7 +171,9 @@ struct SettingsView: View {
                 }
             }
 
-            Divider()
+            Text(isKorean ? "새로운 엉뚱한 일을 생각하셨다면 개발자에게 메일로 보내주세요. 좋은 아이디어는 앱에 추가될 수 있습니다!" : "If you have a great quirky idea, send it to us! Your ideas might be featured in the app!")
+                .font(.caption)
+                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
 
             // 개발자 응원하기
             Button {
@@ -243,26 +245,18 @@ struct SettingsView: View {
                     }
                 }
             }
-            @Bindable var s = settings
-            Toggle(isOn: $s.iCloudSyncEnabled) {
-                Text(isKorean ? "☁️ 내 정보 iCloud 동기화" : "☁️ iCloud Sync My Info")
-                    .foregroundStyle(Color.quirklyTextDark)
-            }
-            .tint(.quirklyBlue)
-            .disabled(repository.isLoading)
-            
             if let error = repository.lastError {
                 Text("⚠️ \(error)")
                     .font(.caption)
                     .foregroundStyle(.red)
             }
-            
+
             if showSyncSuccess {
                 Text(isKorean ? "✅ \(repository.taskCount)개 미션 로드 완료!" : "✅ \(repository.taskCount) missions loaded!")
                     .font(.caption)
                     .foregroundStyle(Color.quirklyGreen)
             }
-            
+
             if let lastSync = settings.lastSyncDate {
                 HStack {
                     Text(isKorean ? "마지막 새로고침 (미션)" : "Last Tasks Refresh")
@@ -274,6 +268,14 @@ struct SettingsView: View {
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
                 }
             }
+
+            @Bindable var s = settings
+            Toggle(isOn: $s.iCloudSyncEnabled) {
+                Text(isKorean ? "☁️ 내 정보 iCloud 동기화" : "☁️ iCloud Sync My Info")
+                    .foregroundStyle(Color.quirklyTextDark)
+            }
+            .tint(.quirklyBlue)
+            .disabled(repository.isLoading)
         } header: {
             Text(isKorean ? "데이터 연동" : "Data & Sync")
         }
