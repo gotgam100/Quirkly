@@ -1,0 +1,123 @@
+id,emoji,titleKo,titleEn,category,difficulty
+1,👁️,비둘기와 10초 동안 눈 마주치기,Make eye contact with a pigeon for 10 seconds,observation,easy
+2,🚗,지나가는 차 번호 하루종일 외우기,Remember passing car numbers all day,observation,easy
+3,☁️,구름에서 동물 모양 찾기,Find animal shapes in clouds,observation,easy
+4,⭕,주변에서 동그란 것 5개 찾기,Find 5 round things around you,observation,easy
+5,🛗,엘리베이터 층버튼 중 가장 많이 눌린 거 추측하기,Guess which elevator button was pressed most,observation,easy
+6,🚦,신호등이 바뀌는 순간을 카운트 해서 맞추기,Count and guess when the traffic light changes,observation,medium
+7,🧦,오늘 신은 양말 어디서났는지 생각하기,Remember where your socks came from today,observation,easy
+8,🌳,주변의 나무 이름 하나 찾아보기,Find and name a tree nearby,observation,easy
+9,🐜,개미 발견하고 30초간 따라다니기,Spot an ant and follow it for 30 seconds,observation,easy
+10,🔲,주변에서 가장 완벽한 네모 찾기,Find the most perfect square around,observation,easy
+11,🐕,오늘 본 강아지 이름 마음대로 짓기,Give a name to a dog you saw today,observation,easy
+12,🎨,자화상 그려서 친구에게 팔기,Count the colors of food on your plate,observation,easy
+13,👣,주변 사물에서 눈코입 모양 찾기,"Find shapes of eyes, nose, and mouth in objects",observation,easy
+14,😑,1분동안 눈감고 들리는 소리에 집중하기,Close your eyes for 1 minute and focus on sounds,observation,easy
+15,⏱️,눈 감고 정확히 1분 세어보기,Close your eyes and count to exactly 1 minute,observation,medium
+16,🗑️,길에서 쓰레기통 3개 찾기,Find 3 trash cans on the street,observation,easy
+17,🌈,주변에서 무지개 색 순서대로 빨리 찾기,Find rainbow colors in order around you,observation,hard
+18,🚶,앞 사람 걸음에 발맞춰 걷기,Walk in sync with the person in front of you,observation,easy
+19,📦,편의점에서 가장 이상한 상품 이름 찾기,Find the strangest product names at convenience stores,observation,easy
+20,🔍,주변에서 글자 'ㅎ'이 들어간 간판 찾기,Find a sign with the letter 'ㅎ' nearby,observation,easy
+21,🏪,편의점에서 가장 싼물건 사기,Buy the cheapest item at a convenience store,observation,easy
+22,💡,발명 하나 하기,Invent something,creative,medium
+23,🎩,"누군가에게 '보스, 부르셨습니까?' 하고 말하기","Ask someone 'boss, did you call me?'",speech,medium
+24,📻,오늘 들은 노래를 라디오 DJ처럼 소개하기,Introduce a song you heard like a radio DJ,speech,easy
+25,🫡,군인처럼 말하기,Speak like a soldier,speech,easy
+26,🌟,"자기 이름 붙여서 말하기(예:""민기는 지금 배고파."")",Say ‘good job’ out loud to yourself,말하기 / speech,easy
+27,🧙,내일에 대한 예언 하나 하기,Make a prediction about tomorrow,speech,medium
+28,🤖,로봇 말투로 5분 대화하기,Have a 5-minute conversation in a robot tone,speech,hard
+29,🎤,혼자 집에서 시상식 수상소감 말하기,Give an acceptance speech alone at home,speech,easy
+30,🦸,좋아하는 영화 대사 상대에게 말하기,Tell your favorite movie line to someone,speech,medium
+31,📖,오늘 먹은 메뉴를 맛 해설가처럼 설명하기,Describe today's menu like a food critic,speech,easy
+32,🗣️,거울 보고 '넌 할 수 있어' 3번 말하기,Look in mirror and say 'you can do it' 3 times,speech,easy
+33,🐶,동물 울음소리 3가지 진지하게 연습하기,Practice 3 animal sounds seriously,speech,easy
+34,👋,모르는 사람에게 손 흔들어보기,Wave to a stranger,speech,medium
+35,💬,대화 중 갑자기 속담 하나 끼워넣기,Suddenly insert a proverb into conversation,speech,medium
+36,🗞️,아침에 '속보입니다!' 하고 가족에게 아무 말 전하기,Say 'breaking news!' and tell family anything,speech,easy
+37,🧐,그런데 말입니다...'하고 아무 의견 말하기,Saying anything with 'i think...',말하기 / speech,easy
+38,🍚,몇 번의 숟가락질로 밥 다먹는지 세보기,Count how many spoonfuls to finish rice,food,easy
+39,🦶,두 번째 발가락만 움직여보기,Move only your second toe,food,easy
+40,🥢,숟가락 없이 젓가락만으로 밥 다 먹기,"Eat rice with only chopsticks, no spoon",food,medium
+41,🍽️,접시 위 음식 색깔 개수 세기,Count the number of colors on your plate,food,easy
+42,🐢,한 입 먹고 30초 쉬고 반복하기,"Take a bite, rest 30 seconds, repeat",food,medium
+43,🎵,음식 씹는 소리에 집중해보기,Focus on the sound of chewing,food,easy
+44,🧊,얼음 하나 입에 넣고 녹을 때까지 기다리기,Put ice in your mouth and wait for it to melt,food,easy
+45,🤏,한 입을 최대한 작게 먹어보기,Take the smallest bite possible,food,easy
+46,🍕,피자를 바깥 쪽부터 먹기,Eat pizza from the inside out,food,easy
+47,🥄,국물 요리를 포크로 먹기,Try eating soup with a fork,food,hard
+48,🍜,면 한 가닥씩 먹기,Eat noodles one strand at a time,food,hard
+49,🥕,오늘 간식 먹을 때 채소 한 개 같이 먹기,Eat a vegetable with your snack today,food,easy
+50,🛗,엘리베이터에서 벽보고 서서 혼자 음흉하게 웃기,Turn around in the elevator and smile to the wall,movement,medium
+51,🪜,계단 마지막 칸을 두 칸 한꺼번에 올라가기,Skip the last step of stairs,movement,easy
+52,🚪,오늘 모든 문을 오른발로 먼저 들어가기,Enter every door with your right foot first,movement,easy
+53,🧍,신호 기다릴 때 발꿈치 들었다 내리기 10번,Raise and lower heels 10 times while waiting,movement,easy
+54,🤲,뒷짐 지고 5분 걷기,Walk for 5 minutes with hands behind your back,movement,easy
+55,🧗,계단을 한 칸씩 아주 느리게 올라가기,Climb stairs one step very slowly,movement,easy
+56,💃,아무도 없을 때 3초 춤추기,Dance for 3 seconds when no one is looking,movement,easy
+57,🏃,횡단보도에서 흰색 줄무늬만 밟기,Only step on white stripes at crosswalks,movement,easy
+58,🧘,의자에서 눈 감고 30초 명상하기,Meditate with eyes closed for 30 seconds,movement,easy
+59,🚶‍♂️,가운데 손가락만 편 주먹을 주머니에 넣고 다니기,Keep hand in pocket with only middle finger up,movement,easy
+60,👞,신발 끈을 평소와 다른 방식으로 묶기,Tie shoelaces in a different way,movement,easy
+61,🤔,얼굴에 점 세보기,Count spots on your face,movement,easy
+62,🎬,액션 영화 대사 하나 외우기,Memorize a line from an action movie,creative,easy
+63,📜,내 이름으로 삼행시 짓기,Write an acrostic poem with your name,creative,easy
+64,👗,친구와 드레스코드 맞춰서 만나기,Name a fashion concept for your outfit today,creative,easy
+65,📖,보이는 물건 3개로 즉석 이야기 만들기,Create a story with 3 visible objects,creative,medium
+66,🎵,지금 들리는 소리로 노래 가사 만들기,Create song lyrics from sounds around you,creative,medium
+67,🎨,종이에 30초 안에 강아지 그리기,Draw a dog in 30 seconds,creative,easy
+68,🤳,지금 가장 재미있는 표정 짓고 셀카 찍기,Take a selfie with your funniest expression,creative,easy
+69,✍️,왼손(또는 반대 손)으로 내 이름 써보기,Write your name with your left hand (or the other hand),창의 / creative,easy
+70,🎪,오늘 본 사람 중 한 명에게 별명 지어주기,Give a nickname to someone you saw today,creative,easy
+71,🗺️,집에서 학교/회사까지 길을 그림으로 그리기,Draw the route from home to school/work,creative,medium
+72,📱,하루 동안 핸드폰 배경화면에 부끄러운 사진 걸어놓기,Write a poem about your phone wallpaper,creative,medium
+73,🪱,지렁이 구해주기,Give your house a name,creative,easy
+74,🔮,내일 있을 일 3가지 예측해보기,Predict 3 things that will happen tomorrow,creative,easy
+75,💇,머리카락 하나 뽑아서 거슬리게 두기,Pull out a hair and let it bother you,solo,easy
+76,📱,핸드폰을 5분 동안 아무것도 안 하고 바라보기,Stare at your phone without doing anything for 5 minutes,solo,easy
+77,👀,눈 깜빡이지 않고 최대한 오래 버티기,Hold on without blinking as long as possible,solo,easy
+78,🧠,초등학교 때 친구 이름 5명 떠올리기,Recall 5 friends' names from elementary school,solo,easy
+79,👅,혀로 코 닿기 시도해보기,Try touching your nose with your tongue,solo,easy
+80,🦷,혀로 이빨 개수 세어보기,Count your teeth with your tongue,solo,easy
+81,🤲,양손으로 동시에 다른 글자 써보기,Write different letters with both hands at once,solo,hard
+82,🖐️,다른 사람이랑 손가락 길이 재보기,Measure finger length with someone,social,medium
+83,💅,손톱에 눈코입 그리기,"Draw eyes, nose, and mouth on your nails",solo,easy
+84,😊,오늘 처음 만난 사람에게 별명 지어주기,Give a nickname to someone you meet today,social,medium
+85,👏,누군가의 옷을 칭찬하기,Compliment someone's clothes,social,easy
+86,☕,카페에서 '오늘 제 인생 최고의 날이에요' 하고 말하기,Say 'today is the best day of my life' at a cafe,social,hard
+87,❤️,가족에게 갑자기 이유 없이 '사랑해요' 문자 보내기,Text your family 'I love you' for no reason,social,easy
+88,🎂,가장 먼저 만난 사람에게 생일 물어보기,Ask the first person you meet about their birthday,social,easy
+89,🍀,누군가에게 '오늘 뭔가 좋은 일 생길 것 같아요' 말하기,Tell someone 'something good will happen today',social,easy
+90,🙋,엘리베이터에서 모르는 사람에게 인사하기,Greet a stranger in the elevator,social,medium
+91,🎁,"친구에게 사소한 선물 하나 주기 (사탕, 메모지 등)","Give a small gift to a friend (candy, note paper, etc.)",사회적 / social,easy
+92,💌,가족에게 '오늘 다들 고생 많으셨어요' 보내기,Send gratitude message to family,social,easy
+93,👖,잘 안입는 옷 주머니에 5천원 넣어놓기,Shake hands with someone you met today,social,medium
+94,📞,오래 연락 안 한 친구에게 먼저 연락하기,Contact a friend you haven't seen in a while,social,easy
+95,🗨️,편의점 직원에게 칭찬하기,Compliment a convenience store employee,social,easy
+96,👍,SNS에서 아무 게시물이나 좋아요 10개 누르기,Like 10 random posts on social media,social,easy
+97,🤷,친구에게 '혹시 나에 대해 궁금한 거 없어?' 물어보기,Ask your friend 'do you have questions about me?',social,medium
+98,🫶,부모님에게 '어렸을 때 제가 제일 귀여웠을 때가 언제예요?' 물어보기,Ask parents 'when was I cutest as a kid?',social,easy
+99,🏠,이웃에게 외국어로 인사하기,Greet neighbors in a foreign language,social,easy
+100,👫,친구와 10초 동안 눈 마주치기 대결하기,Make eye contact with a friend for 10 seconds,social,easy
+101,🙈,누군가에게 '비밀인데...' 하고 아무 말이나 하기,Tell someone 'it's a secret...' and say anything,social,easy
+102,🏷️,옷 태그에 적힌 세탁 방법 소리내어 읽어보기,Read washing instructions on clothing tags aloud,solo,easy
+103,🧤,주머니 속 물건 만져서 뭔지 맞추기,Guess items in your pocket by touch,solo,easy
+104,🪥,이 닦을 때 반대 손으로 닦기,Brush your teeth with your non-dominant hand,solo,easy
+105,⌚,시계 안 보고 지금 몇 시인지 맞추기,Guess the time without looking at a clock,solo,easy
+106,📚,아무 책이나 펴서 첫 문장 읽기,Open any book and read the first sentence,creative,easy
+107,🗓️,오늘 날짜를 다른 달력(음력 등)으로 뭔지 찾아보기,"Find today's date in another calendar (lunar calendar, etc.)",창의 / creative,easy
+108,🎯,종이 구겨서 쓰레기통에 던지기 (3점슛),Crumple up the paper and throw it in the trash can (3-point shot),움직임 / movement,easy
+109,✂️,종이를 손으로만 완벽한 원 모양으로 찢기,Tear paper into a perfect circle with hands,creative,hard
+110,🤹,물건 2개로 저글링 도전하기,Challenge yourself to juggle two objects,movement,medium
+111,🗂️,핸드폰 사진첩에서 1년 전 사진 찾아보기,Find photos from a year ago in your phone album,solo,easy
+112,🦾,팔씨름 자세 잡고 혼자 힘주기,Do arm wrestling pose alone with strength,solo,easy
+113,🎺,손으로 트럼펫 소리 내기,Make trumpet sounds with your hands,creative,easy
+114,🧦,양말 짝짝이로 신기,Wear mismatched socks,solo,easy
+115,☂️,비 안와도 우산 가지고 나가기,Take an umbrella even if it's not raining,solo,easy
+116,🐢,슬로우 모션으로 움직여보기,Move in slow motion,movement,easy
+117,📝,사인 연습하기,Practice your signature,creative,easy
+118,🎬,영화 엔딩 크레딧 끝까지 보기,Watch entire movie ending credits,creative,easy
+119,🎊,아무 종이나 최대한 작게 쪼개기,Break paper into smallest pieces possible,creative,easy
+120,❗️,새로운 감탄사 하나 만들기,Create a new exclamation,speech,easy
+121,🤌,이탈리아 사람처럼 손 제스처 하며 말하기,Speak with hand gestures like an Italian,speech,easy
+122,✨,오늘 가장 반짝이는 것 찾기,Find the brightest thing today,observation,easy

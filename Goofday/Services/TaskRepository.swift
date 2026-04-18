@@ -77,20 +77,35 @@ final class TaskRepository {
             taskCount = count
             return
         }
-        
-        // 번들 JSON에서 로드
-        guard let url = Bundle.main.url(forResource: "default_tasks", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let dtos = try? JSONDecoder().decode([GoofyTaskDTO].self, from: data) else {
+
+        var dtos: [GoofyTaskDTO] = []
+
+        // 1. 먼저 번들 CSV에서 로드 시도
+        if let csvUrl = Bundle.main.url(forResource: "tasks", withExtension: "csv"),
+           let csvData = try? Data(contentsOf: csvUrl) {
+            dtos = CSVParser.parse(csvData)
+            print("TaskRepository: CSV 데이터 로드 완료 (\(dtos.count)개)")
+        }
+
+        // 2. CSV가 없거나 파싱 실패 시 JSON에서 로드
+        if dtos.isEmpty,
+           let jsonUrl = Bundle.main.url(forResource: "default_tasks", withExtension: "json"),
+           let jsonData = try? Data(contentsOf: jsonUrl),
+           let jsonDtos = try? JSONDecoder().decode([GoofyTaskDTO].self, from: jsonData) {
+            dtos = jsonDtos
+            print("TaskRepository: JSON 데이터 로드 완료 (\(dtos.count)개)")
+        }
+
+        guard !dtos.isEmpty else {
             print("TaskRepository: 번들 기본 데이터 로드 실패")
             return
         }
-        
+
         for dto in dtos {
             let task = dto.toModel()
             modelContext.insert(task)
         }
-        
+
         try? modelContext.save()
         taskCount = dtos.count
     }
