@@ -262,7 +262,6 @@ struct SettingsView: View {
             }
 
             Divider()
-                .padding(.vertical, 8)
 
             HStack(spacing: 12) {
                 Button {
