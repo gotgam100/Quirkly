@@ -261,6 +261,9 @@ struct SettingsView: View {
                     .foregroundStyle(.red)
             }
 
+            Divider()
+                .padding(.vertical, 8)
+
             HStack(spacing: 12) {
                 Button {
                     exportRecords()
