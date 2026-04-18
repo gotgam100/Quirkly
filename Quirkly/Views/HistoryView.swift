@@ -84,17 +84,18 @@ struct HistoryView: View {
 
                         List {
                             ForEach(groupedRecords, id: \.0) { dateString, records in
-                                Section {
-                                    ForEach(records) { record in
-                                        RecordRow(record: record, isKorean: isKorean)
-                                    }
-                                    .onDelete { offsets in
-                                        deleteRecords(from: records, at: offsets)
-                                    }
-                                } header: {
-                                    Text("📅 \(dateString)")
-                                        .font(.system(size: 13, weight: .bold, design: .rounded))
-                                        .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+                                Text("📅 \(dateString)")
+                                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                                    .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+                                    .listRowBackground(Color.quirklyBgLight)
+                                    .listRowSeparator(.hidden)
+                                    .padding(.top, 8)
+
+                                ForEach(records) { record in
+                                    RecordRow(record: record, isKorean: isKorean)
+                                }
+                                .onDelete { offsets in
+                                    deleteRecords(from: records, at: offsets)
                                 }
                             }
                         }
@@ -104,7 +105,7 @@ struct HistoryView: View {
                 }
             }
             .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .task { updateStreak() }
         }
     }
