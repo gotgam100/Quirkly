@@ -71,10 +71,7 @@ struct HistoryView: View {
                 Color.quirklyBgLight.ignoresSafeArea()
 
                 if allRecords.isEmpty {
-                    VStack(spacing: 0) {
-                        titleHeader
-                        emptyState
-                    }
+                    emptyState
                 } else {
                     VStack(spacing: 0) {
                         titleHeader
@@ -131,8 +128,8 @@ struct HistoryView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .padding(.top, 2)
-        .padding(.bottom, 16)
+        .padding(.top, 20)
+        .padding(.bottom, 12)
         .background(Color.quirklyBgLight)
     }
 

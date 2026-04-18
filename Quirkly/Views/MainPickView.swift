@@ -372,8 +372,11 @@ struct MainPickView: View {
         modelContext.insert(record)
         try? modelContext.save()
 
+        if todayPassed == 0 {
+            flashPassButton()
+        }
+
         updateStats()
-        flashPassButton()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             spinAndPick()
