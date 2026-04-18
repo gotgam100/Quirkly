@@ -73,39 +73,38 @@ struct HistoryView: View {
                 if allRecords.isEmpty {
                     emptyState
                 } else {
-                    VStack(spacing: 0) {
-                        statsHeader
-                            .padding(.bottom, 8)
-                            .background(Color.quirklyBgLight)
+                    List {
+                        Section {
+                            statsHeader
+                                .padding(.vertical, 4)
+                            filterPicker
+                        }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.quirklyBgLight)
+                        .listRowSeparator(.hidden)
 
-                        filterPicker
-                            .padding(.bottom, 4)
-                            .background(Color.quirklyBgLight)
+                        ForEach(groupedRecords, id: \.0) { dateString, records in
+                            Text("📅 \(dateString)")
+                                .font(.system(size: 13, weight: .bold, design: .rounded))
+                                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+                                .listRowBackground(Color.quirklyBgLight)
+                                .listRowSeparator(.hidden)
+                                .padding(.top, 8)
 
-                        List {
-                            ForEach(groupedRecords, id: \.0) { dateString, records in
-                                Text("📅 \(dateString)")
-                                    .font(.system(size: 13, weight: .bold, design: .rounded))
-                                    .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
-                                    .listRowBackground(Color.quirklyBgLight)
-                                    .listRowSeparator(.hidden)
-                                    .padding(.top, 8)
-
-                                ForEach(records) { record in
-                                    RecordRow(record: record, isKorean: isKorean)
-                                }
-                                .onDelete { offsets in
-                                    deleteRecords(from: records, at: offsets)
-                                }
+                            ForEach(records) { record in
+                                RecordRow(record: record, isKorean: isKorean)
+                            }
+                            .onDelete { offsets in
+                                deleteRecords(from: records, at: offsets)
                             }
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
                     }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
                 }
             }
             .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
             .task { updateStreak() }
         }
     }

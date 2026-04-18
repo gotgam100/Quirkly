@@ -146,7 +146,6 @@ struct SettingsView: View {
                     HStack {
                         Text(isKorean ? "💡 엉뚱한 아이디어 등록" : "💡 Submit Quirky Idea")
                             .foregroundStyle(Color.quirklyTextDark)
-                            .font(.system(size: 16, weight: .semibold))
                         Spacer()
                         Image(systemName: "envelope")
                             .foregroundStyle(Color.quirklyTextDark)
@@ -166,7 +165,6 @@ struct SettingsView: View {
                 HStack {
                     Text(isKorean ? "💡 엉뚱한 아이디어 등록" : "💡 Submit Quirky Idea")
                         .foregroundStyle(Color.quirklyTextDark)
-                        .font(.system(size: 16, weight: .semibold))
                     Spacer()
                     Image(systemName: "envelope")
                         .foregroundStyle(Color.quirklyTextDark)
