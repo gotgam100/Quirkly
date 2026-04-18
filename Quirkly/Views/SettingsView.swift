@@ -194,14 +194,14 @@ struct SettingsView: View {
                 .font(.caption)
                 .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
 
-            // 개발자 응원하기
+            // 앱스토어 별점 남기기
             Button {
                 if let url = URL(string: "https://apps.apple.com/app/quirkly/id6740123456") {
                     UIApplication.shared.open(url)
                 }
             } label: {
                 HStack {
-                    Text(isKorean ? "⭐ 개발자 응원하기" : "⭐ Rate on App Store")
+                    Text(isKorean ? "⭐ 앱스토어 별점 남기기" : "⭐ Rate on App Store")
                         .foregroundStyle(Color.quirklyTextDark)
                     Spacer()
                     Image(systemName: "star.fill")
@@ -238,6 +238,30 @@ struct SettingsView: View {
 
     private var syncSection: some View {
         Section {
+            Button {
+                Task {
+                    await repository.syncFromGoogleSheets(modelContext: modelContext)
+                }
+            } label: {
+                HStack {
+                    Text(isKorean ? "📡 엉뚱한 일들 새로고침" : "📡 Refresh Quirky Tasks")
+                        .foregroundStyle(Color.quirklyTextDark)
+                    Spacer()
+                    if repository.isLoading {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundStyle(Color.quirklyTextDark)
+                    }
+                }
+            }
+
+            if let error = repository.lastError {
+                Text("⚠️ \(error)")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+
             HStack(spacing: 12) {
                 Button {
                     exportRecords()
