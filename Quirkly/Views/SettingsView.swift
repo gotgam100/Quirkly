@@ -27,6 +27,7 @@ struct SettingsView: View {
     @State private var showFileImporter = false
     @State private var showExportSuccess = false
     @State private var exportError: String?
+    @State private var showCoffeeAlert = false
     @Environment(\.requestReview) var requestReview
     
     private var isKorean: Bool { settings.language.resolvedIsKorean }
@@ -90,6 +91,14 @@ struct SettingsView: View {
                 }
             } message: {
                 Text(isKorean ? "모든 기록이 삭제됩니다. 이 작업은 되돌릴 수 없습니다." : "All records will be deleted. This cannot be undone.")
+            }
+            .alert(
+                isKorean ? "감사합니다" : "Thank You",
+                isPresented: $showCoffeeAlert
+            ) {
+                Button(isKorean ? "확인" : "OK", role: .cancel) {}
+            } message: {
+                Text(isKorean ? "마음만 받을께요. 감사합니다!" : "I appreciate your support! Thank you!")
             }
         }
     }
@@ -228,9 +237,7 @@ struct SettingsView: View {
     }
 
     private func purchaseCoffee() async {
-        print("인앱 구매 시작 - 커피")
-        // StoreKit2를 사용한 인앱 구매 로직
-        // 실제 구현 시 Apple에 Product ID를 등록해야 함
+        showCoffeeAlert = true
     }
 
     // MARK: - 동기화
@@ -309,13 +316,6 @@ struct SettingsView: View {
                     .foregroundStyle(Color.quirklyRed)
             }
 
-            Divider()
-                .padding(.vertical, 8)
-
-            Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
-                .font(.caption)
-                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
-
             HStack(spacing: 12) {
                 Button {
                     exportRecords()
@@ -347,6 +347,11 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
+            .padding(.top, 12)
+
+            Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
+                .font(.caption)
+                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
 
             if showExportSuccess {
                 Text(isKorean ? "✅ 기록이 저장되었습니다." : "✅ Records exported successfully")
@@ -492,9 +497,16 @@ struct SettingsView: View {
             let jsonData = try JSONSerialization.data(withJSONObject: dtos, options: .prettyPrinted)
             let fileName = "quirkly_records_\(Date().timeIntervalSince1970).json"
 
-            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            if let tempURL = FileManager.default.temporaryDirectory as NSURL? {
+                let fileURL = tempURL.appendingPathComponent(fileName)!
                 try jsonData.write(to: fileURL)
+
+                let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first,
+                   let rootVC = window.rootViewController {
+                    rootVC.present(activityVC, animated: true)
+                }
 
                 showExportSuccess = true
                 exportError = nil
