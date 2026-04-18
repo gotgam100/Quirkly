@@ -106,9 +106,6 @@ struct MainPickView: View {
                         .font(.system(size: 60))
                     Text(isKorean ? "오늘의 엉뚱한 일 완료!" : "Today's Quirky Done!")
                         .font(.system(size: 22, weight: .black, design: .rounded))
-                    Text(isKorean ? "내일 새로운 엉뚱함으로 만나요!" : "See you tomorrow with new quirkiness!")
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .multilineTextAlignment(.center)
                 }
                 .padding(.vertical, 20)
                 .foregroundStyle(Color.quirklyTextDark)
@@ -256,7 +253,7 @@ struct MainPickView: View {
                     }
                 }
             } else {
-                Text(isKorean ? "내일 또 만나요! 🌈" : "See you tomorrow! 🌈")
+                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow with new quirkiness! 🌈")
                     .font(.system(size: 16, weight: .black, design: .rounded))
                     .foregroundStyle(Color.quirklyBlue)
                     .padding(.top, 10)

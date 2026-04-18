@@ -337,7 +337,7 @@ struct SettingsView: View {
             HStack {
                 Text(isKorean ? "🎲 앱 이름" : "🎲 App Name")
                 Spacer()
-                Text("Quirkly")
+                Text("Quirkly : 나의 엉뚱일지")
                     .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
             }
         } header: {
