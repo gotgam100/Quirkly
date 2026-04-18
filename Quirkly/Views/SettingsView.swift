@@ -72,7 +72,7 @@ struct SettingsView: View {
                     }
                 }
             )
-            .task { updateStreak() }
+            .task {}
             .alert(
                 isKorean ? "기록 초기화" : "Reset Records",
                 isPresented: $showResetAlert
@@ -396,13 +396,8 @@ struct SettingsView: View {
     private func resetAllRecords() {
         try? modelContext.delete(model: QuirkyRecord.self)
         try? modelContext.save()
-        updateStreak()
     }
     
-    private func updateStreak() {
-        streak = repository.currentStreak(modelContext: modelContext)
-    }
-
     private func exportRecords() {
         do {
             let records = try modelContext.fetch(FetchDescriptor<QuirkyRecord>())
@@ -478,7 +473,6 @@ struct SettingsView: View {
 
             try modelContext.save()
             exportError = nil
-            updateStreak()
         } catch {
             exportError = isKorean ? "가져오기 실패: \(error.localizedDescription)" : "Import failed: \(error.localizedDescription)"
         }
