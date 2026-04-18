@@ -20,7 +20,6 @@ struct SettingsView: View {
     
     @State private var showResetAlert = false
     @State private var showSyncSuccess = false
-    @State private var streak = 0
     @State private var reminderTime: Date = Date()
     @State private var showMailComposer = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?

@@ -35,7 +35,7 @@ struct ShareCardView: View {
             
             Spacer()
             
-            Text("엉뚱한 일 하나, 오늘도 엉뚱한 하루!")
+            Text(isKorean ? "엉뚱한 일 하나, 오늘도 엉뚱한 하루!" : "One quirky thing, one quirky day!")
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)

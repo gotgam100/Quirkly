@@ -276,7 +276,7 @@ struct MainPickView: View {
                     }
                 }
             } else {
-                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow/nwith new quirkiness! 🌈")
+                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow\nwith new quirkiness! 🌈")
                     .font(.system(size: 16, weight: .black, design: .rounded))
                     .foregroundStyle(Color.quirklyBlue)
                     .padding(.top, 10)
@@ -286,15 +286,6 @@ struct MainPickView: View {
         .padding(.top, 20)
     }
 
-    // MARK: - 오늘 통계 뷰
-    private var todayStatsView: some View {
-        HStack(spacing: 20) {
-            StatBadge(emoji: "✅", count: todayCompleted, label: isKorean ? "완료" : "Done")
-            StatBadge(emoji: "🔁", count: todayPassed, label: isKorean ? "패스" : "Pass")
-        }
-        .padding(.horizontal, 24)
-    }
-    
     // MARK: - 로직 함수들
 
     private func tapButton(_ scale: Binding<CGFloat>) {
