@@ -91,8 +91,10 @@ struct HistoryView: View {
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
+                }
 
-                    // 고정된 헤더 (List 위에 겹침)
+                // 고정된 헤더 (List 위에 겹침)
+                if !allRecords.isEmpty {
                     VStack(spacing: 0) {
                         statsHeader
                             .padding(.bottom, 8)
@@ -104,7 +106,7 @@ struct HistoryView: View {
                     .zIndex(1)
                 }
             }
-            .navigationTitle(Text(isKorean ? "나의 엉뚱한 기록" : "My Quirky History").bold())
+            .navigationTitle(Text(isKorean ? "나의 엉뚱한 기록" : "My Quirky History").fontWeight(.heavy))
             .navigationBarTitleDisplayMode(.large)
             .task { updateStreak() }
         }

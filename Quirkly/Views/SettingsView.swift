@@ -61,7 +61,7 @@ struct SettingsView: View {
                 .scrollContentBackground(.hidden)
                 .padding(.top, -8)
             }
-            .navigationTitle(Text(isKorean ? "설정" : "Settings").bold())
+            .navigationTitle(Text(isKorean ? "설정" : "Settings").fontWeight(.heavy))
             .navigationBarTitleDisplayMode(.large)
             .task { updateStreak() }
             .alert(

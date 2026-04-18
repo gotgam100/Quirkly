@@ -37,9 +37,6 @@ struct MainPickView: View {
 
                 ScrollView {
                     VStack(spacing: 28) {
-                        // 반짝임 아이콘들
-                        sparkles
-
                         // 설명글
                         subtitleSection
 
@@ -63,7 +60,7 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle(Text("Quirkly : 나의 엉뚱일지").bold())
+            .navigationTitle(Text("Quirkly : 나의 엉뚱일지").fontWeight(.heavy))
             .navigationBarTitleDisplayMode(.large)
             .task {
                 if !hasLoadedInitial {
@@ -77,20 +74,15 @@ struct MainPickView: View {
     
     // MARK: - 배경
     private var backgroundView: some View {
-        Color.quirklyBgLight.ignoresSafeArea()
-    }
-
-    // MARK: - 반짝임 아이콘들 (scroll 함께 움직임)
-    private var sparkles: some View {
-        GeometryReader { geo in
-            ZStack {
+        ZStack {
+            Color.quirklyBgLight.ignoresSafeArea()
+            GeometryReader { geo in
                 SparkleView(size: 20, color: .quirklyYellow).position(x: 40, y: 80)
                 SparkleView(size: 14, color: .quirklyPink).position(x: geo.size.width - 50, y: 120)
                 SparkleView(size: 16, color: .quirklyGreen).position(x: 60, y: geo.size.height - 80)
                 SparkleView(size: 10, color: .quirklyBlue).position(x: geo.size.width - 30, y: geo.size.height - 100)
             }
         }
-        .frame(height: 600)
     }
     
     // MARK: - 서브 타이틀 (설명글)
