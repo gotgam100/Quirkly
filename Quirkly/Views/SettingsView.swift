@@ -352,7 +352,7 @@ struct SettingsView: View {
         Section {
             // 이용약관
             Button {
-                if let url = URL(string: "https://sites.google.com/view/quirkly-terms") {
+                if let url = URL(string: "https://gotgam100.github.io/Quirkly/terms.html") {
                     UIApplication.shared.open(url)
                 }
             } label: {
@@ -368,7 +368,7 @@ struct SettingsView: View {
 
             // 개인정보 처리방침
             Button {
-                if let url = URL(string: "https://sites.google.com/view/quirkly-privacy") {
+                if let url = URL(string: "https://gotgam100.github.io/Quirkly/privacy.html") {
                     UIApplication.shared.open(url)
                 }
             } label: {
@@ -384,7 +384,7 @@ struct SettingsView: View {
 
             // 오픈소스 라이선스
             Button {
-                if let url = URL(string: "https://sites.google.com/view/quirkly-licenses") {
+                if let url = URL(string: "https://gotgam100.github.io/Quirkly/licenses.html") {
                     UIApplication.shared.open(url)
                 }
             } label: {

@@ -128,7 +128,7 @@ struct HistoryView: View {
             Spacer()
         }
         .padding(.horizontal, 20)
-        .padding(.top, 32)
+        .padding(.top, 62)
         .padding(.bottom, 8)
         .background(Color.quirklyBgLight)
     }
@@ -184,7 +184,7 @@ struct HistoryView: View {
             }
             .padding(.horizontal, 20)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 0)
     }
 
     private func getTitleForStreak(_ days: Int) -> String {

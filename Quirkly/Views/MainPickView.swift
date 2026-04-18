@@ -65,7 +65,7 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle("QUIRKLY : 나의 엉뚱일지")
+            .navigationTitle("Quirkly : 나의 엉뚱일지")
             .navigationBarTitleDisplayMode(.large)
             .task {
                 if !hasLoadedInitial {
@@ -150,6 +150,7 @@ struct MainPickView: View {
                     Text(isKorean ? "하루에 하나만 뽑을 수 있어요.\n단, 패스 3번 가능." : "You can pick only one per day.\nUp to 3 passes allowed.")
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
+                        .multilineTextAlignment(.center)
                 }
                 .padding(.vertical, 20)
             }
@@ -273,15 +274,16 @@ struct MainPickView: View {
                     }
                 }
             } else {
-                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow with new quirkiness! 🌈")
+                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow/nwith new quirkiness! 🌈")
                     .font(.system(size: 16, weight: .black, design: .rounded))
                     .foregroundStyle(Color.quirklyBlue)
                     .padding(.top, 10)
             }
         }
         .padding(.horizontal, 24)
+        .padding(.top, 20)
     }
-    
+
     // MARK: - 오늘 통계 뷰
     private var todayStatsView: some View {
         HStack(spacing: 20) {
@@ -375,12 +377,12 @@ struct MainPickView: View {
         modelContext.insert(record)
         try? modelContext.save()
 
-        // 패스가 0/3일 때만 깜빡임
-        if todayPassed == 0 && todayPassed < 3 {
+        updateStats()
+
+        // 패스를 3번 모두 썼을 때만 깜빡임
+        if todayPassed >= 3 {
             flashPassButton()
         }
-
-        updateStats()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             spinAndPick()
