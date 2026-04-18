@@ -73,34 +73,42 @@ struct HistoryView: View {
                 if allRecords.isEmpty {
                     emptyState
                 } else {
-                    List {
-                        Section {
-                            statsHeader
-                                .padding(.vertical, 4)
-                            filterPicker
-                        }
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.quirklyBgLight)
-                        .listRowSeparator(.hidden)
+                    VStack(spacing: 0) {
+                        statsHeader
+                            .padding(.vertical, 8)
+                            .background(Color.quirklyBgLight)
 
-                        ForEach(groupedRecords, id: \.0) { dateString, records in
-                            Text("📅 \(dateString)")
-                                .font(.system(size: 13, weight: .bold, design: .rounded))
-                                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
-                                .listRowBackground(Color.quirklyBgLight)
-                                .listRowSeparator(.hidden)
-                                .padding(.top, 8)
+                        filterPicker
+                            .background(Color.quirklyBgLight)
 
-                            ForEach(records) { record in
-                                RecordRow(record: record, isKorean: isKorean)
+                        if filteredRecords.isEmpty {
+                            Spacer()
+                            Text(isKorean ? "해당 기록이 없어요" : "No records found")
+                                .font(.system(size: 16, weight: .medium, design: .rounded))
+                                .foregroundStyle(Color.quirklyTextDark.opacity(0.4))
+                            Spacer()
+                        } else {
+                            List {
+                                ForEach(groupedRecords, id: \.0) { dateString, records in
+                                    Text("📅 \(dateString)")
+                                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                                        .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+                                        .listRowBackground(Color.quirklyBgLight)
+                                        .listRowSeparator(.hidden)
+                                        .padding(.top, 8)
+
+                                    ForEach(records) { record in
+                                        RecordRow(record: record, isKorean: isKorean)
+                                    }
+                                    .onDelete { offsets in
+                                        deleteRecords(from: records, at: offsets)
+                                    }
+                                }
                             }
-                            .onDelete { offsets in
-                                deleteRecords(from: records, at: offsets)
-                            }
+                            .listStyle(.plain)
+                            .scrollContentBackground(.hidden)
                         }
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
                 }
             }
             .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
