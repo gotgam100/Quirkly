@@ -26,7 +26,12 @@ struct MainPickView: View {
     @State private var hasLoadedInitial = false
     
     @State private var confettiParticles: [ConfettiParticle] = []
-    
+    @State private var passFlash = false
+    @State private var spinScale: CGFloat = 1.0
+    @State private var passScale: CGFloat = 1.0
+    @State private var decideScale: CGFloat = 1.0
+    @State private var doneScale: CGFloat = 1.0
+
     private var isKorean: Bool { settings.language.resolvedIsKorean }
     
     var body: some View {
@@ -206,7 +211,10 @@ struct MainPickView: View {
             if todayCompleted < 1 {
                 if currentTask == nil {
                     // 최초 뽑기 버튼
-                    Button(action: spinAndPick) {
+                    Button(action: {
+                        tapButton($spinScale)
+                        spinAndPick()
+                    }) {
                         HStack(spacing: 8) {
                             Image(systemName: "dice.fill")
                             Text(isKorean ? "뽑기!" : "Pick!")
@@ -214,11 +222,15 @@ struct MainPickView: View {
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(QuirklyButtonStyle(color: .quirklyBlue))
+                    .scaleEffect(spinScale)
                     .disabled(isSpinning)
                 } else {
                     if !isDecided {
                         // 미션 뽑힌 후: 패스(위) + 결정(아래) 세로 배열
-                        Button(action: passMission) {
+                        Button(action: {
+                            tapButton($passScale)
+                            passMission()
+                        }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "arrow.uturn.forward")
                                 Text(isKorean ? "패스 (\(3 - todayPassed)/3)" : "Pass (\(3 - todayPassed)/3)")
@@ -226,9 +238,12 @@ struct MainPickView: View {
                             .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(QuirklyButtonStyle(color: .quirklyRed))
+                        .scaleEffect(passScale)
+                        .opacity(passFlash ? 0.25 : 1.0)
                         .disabled(todayPassed >= 3 || isSpinning)
 
                         Button(action: {
+                            tapButton($decideScale)
                             withAnimation(.spring()) { isDecided = true }
                         }) {
                             HStack(spacing: 6) {
@@ -238,10 +253,14 @@ struct MainPickView: View {
                             .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(QuirklyButtonStyle(color: .quirklyBlue))
+                        .scaleEffect(decideScale)
                         .disabled(isSpinning)
                     } else {
                         // 결정 후 '완료' 버튼 노출
-                        Button(action: completeMission) {
+                        Button(action: {
+                            tapButton($doneScale)
+                            completeMission()
+                        }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "checkmark.circle.fill")
                                 Text(isKorean ? "완료!" : "Done!")
@@ -249,6 +268,7 @@ struct MainPickView: View {
                             .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(QuirklyButtonStyle(color: .quirklyGreen))
+                        .scaleEffect(doneScale)
                         .disabled(isSpinning)
                     }
                 }
@@ -272,7 +292,27 @@ struct MainPickView: View {
     }
     
     // MARK: - 로직 함수들
-    
+
+    private func tapButton(_ scale: Binding<CGFloat>) {
+        withAnimation(.spring(response: 0.15, dampingFraction: 0.5)) { scale.wrappedValue = 0.86 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { scale.wrappedValue = 1.0 }
+        }
+    }
+
+    private func flashPassButton() {
+        withAnimation(.easeInOut(duration: 0.12)) { passFlash = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+            withAnimation(.easeInOut(duration: 0.12)) { passFlash = false }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                withAnimation(.easeInOut(duration: 0.12)) { passFlash = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                    withAnimation(.easeInOut(duration: 0.12)) { passFlash = false }
+                }
+            }
+        }
+    }
+
     private func pickNewTask() {
         currentTask = repository.randomTask(modelContext: modelContext, excluding: currentTask?.taskId)
         cardRotation = Double.random(in: -3...3)
@@ -331,9 +371,15 @@ struct MainPickView: View {
         let record = QuirkyRecord(task: task, status: .passed)
         modelContext.insert(record)
         try? modelContext.save()
-        
+
         updateStats()
         spinAndPick()
+
+        if todayPassed >= 3 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
+                flashPassButton()
+            }
+        }
     }
     
     private func updateStats() {

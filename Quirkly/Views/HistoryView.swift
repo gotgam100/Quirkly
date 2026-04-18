@@ -71,9 +71,14 @@ struct HistoryView: View {
                 Color.quirklyBgLight.ignoresSafeArea()
 
                 if allRecords.isEmpty {
-                    emptyState
+                    VStack(spacing: 0) {
+                        titleHeader
+                        emptyState
+                    }
                 } else {
                     VStack(spacing: 0) {
+                        titleHeader
+
                         statsHeader
                             .padding(.vertical, 8)
                             .background(Color.quirklyBgLight)
@@ -111,12 +116,26 @@ struct HistoryView: View {
                     }
                 }
             }
-            .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
-            .navigationBarTitleDisplayMode(.large)
+            .toolbar(.hidden, for: .navigationBar)
             .task { updateStreak() }
         }
     }
     
+    // MARK: - 커스텀 타이틀 헤더
+    private var titleHeader: some View {
+        HStack {
+            Text(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .foregroundStyle(.primary)
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 12)
+        .padding(.bottom, 4)
+        .background(Color.quirklyBgLight)
+    }
+
     // MARK: - 빈 상태
     
     private var emptyState: some View {
