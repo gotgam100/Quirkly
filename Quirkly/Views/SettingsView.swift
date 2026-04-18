@@ -261,8 +261,6 @@ struct SettingsView: View {
                     .foregroundStyle(.red)
             }
 
-            Divider()
-
             HStack(spacing: 12) {
                 Button {
                     exportRecords()
@@ -294,7 +292,6 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .listRowSeparator(.hidden)
 
             Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
                 .font(.caption)
