@@ -106,13 +106,8 @@ struct HistoryView: View {
                     .zIndex(1)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
-                        .font(.system(size: 17, weight: .heavy))
-                }
-            }
+            .navigationTitle(isKorean ? "나의 엉뚱한 기록" : "My Quirky History")
+            .navigationBarTitleDisplayMode(.large)
             .task { updateStreak() }
         }
     }
