@@ -130,9 +130,9 @@ struct HistoryView: View {
                 .foregroundStyle(.primary)
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 4)
+        .padding(.horizontal, 20)
+        .padding(.top, 2)
+        .padding(.bottom, 16)
         .background(Color.quirklyBgLight)
     }
 

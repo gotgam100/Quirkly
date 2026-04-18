@@ -294,9 +294,9 @@ struct MainPickView: View {
     // MARK: - 로직 함수들
 
     private func tapButton(_ scale: Binding<CGFloat>) {
-        withAnimation(.spring(response: 0.15, dampingFraction: 0.5)) { scale.wrappedValue = 0.86 }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { scale.wrappedValue = 1.0 }
+        withAnimation(.spring(response: 0.12, dampingFraction: 0.7)) { scale.wrappedValue = 0.90 }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+            withAnimation(.spring(response: 0.22, dampingFraction: 0.75)) { scale.wrappedValue = 1.0 }
         }
     }
 
@@ -373,12 +373,10 @@ struct MainPickView: View {
         try? modelContext.save()
 
         updateStats()
-        spinAndPick()
+        flashPassButton()
 
-        if todayPassed >= 3 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-                flashPassButton()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            spinAndPick()
         }
     }
     
