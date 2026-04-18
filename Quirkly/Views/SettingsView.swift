@@ -61,8 +61,13 @@ struct SettingsView: View {
                 .scrollContentBackground(.hidden)
                 .padding(.top, -8)
             }
-            .navigationTitle(Text(isKorean ? "설정" : "Settings").fontWeight(.heavy))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(isKorean ? "설정" : "Settings")
+                        .font(.system(size: 17, weight: .heavy))
+                }
+            }
             .task { updateStreak() }
             .alert(
                 isKorean ? "기록 초기화" : "Reset Records",

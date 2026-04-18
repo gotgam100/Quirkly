@@ -60,8 +60,13 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle(Text("Quirkly : 나의 엉뚱일지").fontWeight(.heavy))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Quirkly : 나의 엉뚱일지")
+                        .font(.system(size: 17, weight: .heavy))
+                }
+            }
             .task {
                 if !hasLoadedInitial {
                     repository.loadBundledTasks(modelContext: modelContext)
