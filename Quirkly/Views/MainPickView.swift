@@ -73,6 +73,7 @@ struct MainPickView: View {
                 if !hasLoadedInitial {
                     repository.loadBundledTasks(modelContext: modelContext)
                     updateStats()
+                    restoreCurrentTask()
                     hasLoadedInitial = true
                 }
             }
@@ -314,6 +315,29 @@ struct MainPickView: View {
     private func pickNewTask() {
         currentTask = repository.randomTask(modelContext: modelContext, excluding: currentTask?.taskId)
         cardRotation = Double.random(in: -3...3)
+
+        if let task = currentTask {
+            settings.currentTaskId = task.taskId
+            settings.currentTaskDate = Date()
+        }
+    }
+
+    private func restoreCurrentTask() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let savedDate = settings.currentTaskDate.map { Calendar.current.startOfDay(for: $0) }
+
+        if let savedDate = savedDate, savedDate == today, settings.currentTaskId > 0 {
+            let descriptor = FetchDescriptor<QuirkyTask>(predicate: #Predicate { $0.taskId == settings.currentTaskId })
+            if let task = try? modelContext.fetch(descriptor).first {
+                currentTask = task
+            } else {
+                settings.currentTaskId = 0
+                settings.currentTaskDate = nil
+            }
+        } else {
+            settings.currentTaskId = 0
+            settings.currentTaskDate = nil
+        }
     }
     
     private func spinAndPick() {
@@ -360,6 +384,8 @@ struct MainPickView: View {
             withAnimation(.spring()) {
                 currentTask = nil
                 isDecided = false
+                settings.currentTaskId = 0
+                settings.currentTaskDate = nil
             }
         }
     }
@@ -419,6 +445,8 @@ struct MainPickView: View {
             todayCompleted = 0
             todayPassed = 0
             isDecided = false
+            settings.currentTaskId = 0
+            settings.currentTaskDate = nil
         }
     }
 }

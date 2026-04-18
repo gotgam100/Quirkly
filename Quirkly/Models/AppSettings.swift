@@ -74,6 +74,8 @@ final class AppSettings {
         static let longestStreak = "quirkly_longest_streak"
         static let lastSyncDate = "quirkly_last_sync_date"
         static let iCloudSyncEnabled = "quirkly_icloud_sync"
+        static let currentTaskId = "quirkly_current_task_id"
+        static let currentTaskDate = "quirkly_current_task_date"
     }
     
     // MARK: - Properties
@@ -105,7 +107,15 @@ final class AppSettings {
     var iCloudSyncEnabled: Bool {
         didSet { defaults.set(iCloudSyncEnabled, forKey: Keys.iCloudSyncEnabled) }
     }
-    
+
+    var currentTaskId: Int {
+        didSet { defaults.set(currentTaskId, forKey: Keys.currentTaskId) }
+    }
+
+    var currentTaskDate: Date? {
+        didSet { defaults.set(currentTaskDate, forKey: Keys.currentTaskDate) }
+    }
+
     // MARK: - Init
 
     init() {
@@ -116,6 +126,8 @@ final class AppSettings {
         self.notificationMinute = defaults.object(forKey: Keys.notificationMinute) == nil ? 0 : defaults.integer(forKey: Keys.notificationMinute)
         self.lastSyncDate = defaults.object(forKey: Keys.lastSyncDate) as? Date
         self.iCloudSyncEnabled = defaults.object(forKey: Keys.iCloudSyncEnabled) == nil ? false : defaults.bool(forKey: Keys.iCloudSyncEnabled)
+        self.currentTaskId = defaults.object(forKey: Keys.currentTaskId) == nil ? 0 : defaults.integer(forKey: Keys.currentTaskId)
+        self.currentTaskDate = defaults.object(forKey: Keys.currentTaskDate) as? Date
 
         // Init Notification Delegate automatically
         _ = NotificationManager.shared
