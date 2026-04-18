@@ -47,9 +47,6 @@ struct SettingsView: View {
                     // 나의 기록
                     statsSection
 
-                    // 기록 초기화
-                    dangerSection
-
                     // 함께하기
                     ideaSection
 
@@ -291,30 +288,9 @@ struct SettingsView: View {
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
                 }
             }
-        } header: {
-            Text(isKorean ? "데이터 연동" : "Data & Sync")
-        }
-        .listRowBackground(Color.quirkySurface.opacity(0.5))
-    }
-    
-    // MARK: - 통계
-    
-    private var statsSection: some View {
-        Section {
-            HStack {
-                Text(isKorean ? "📊 총 완료한 미션" : "📊 Total Completed")
-                Spacer()
-                Text("\(allRecords.filter { $0.status == .completed }.count)")
-                    .font(.system(.body, design: .rounded, weight: .bold))
-                    .foregroundStyle(Color.quirklyGreen)
-            }
-            HStack {
-                Text(isKorean ? "🔥 최장 연속" : "🔥 Current Streak")
-                Spacer()
-                Text(isKorean ? "\(streak)일" : "\(streak) days")
-                    .font(.system(.body, design: .rounded, weight: .bold))
-                    .foregroundStyle(Color.quirklyRed)
-            }
+
+            Divider()
+                .padding(.vertical, 8)
 
             HStack(spacing: 12) {
                 Button {
@@ -365,16 +341,9 @@ struct SettingsView: View {
                     .foregroundStyle(.red)
             }
 
-        } header: {
-            Text(isKorean ? "나의 기록" : "My Stats")
-        }
-        .listRowBackground(Color.quirkySurface.opacity(0.5))
-    }
-    
-    // MARK: - 위험 영역
-    
-    private var dangerSection: some View {
-        Section {
+            Divider()
+                .padding(.vertical, 8)
+
             Button(role: .destructive) {
                 showResetAlert = true
             } label: {
@@ -384,6 +353,19 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
+        } header: {
+            Text(isKorean ? "데이터 연동" : "Data & Sync")
+        }
+        .listRowBackground(Color.quirkySurface.opacity(0.5))
+    }
+    
+    // MARK: - 통계
+
+    private var statsSection: some View {
+        Section {
+            EmptyView()
+        } header: {
+            Text(isKorean ? "나의 기록" : "My Stats")
         }
         .listRowBackground(Color.quirkySurface.opacity(0.5))
     }
@@ -396,12 +378,6 @@ struct SettingsView: View {
                 Text(isKorean ? "ℹ️ 앱 버전" : "ℹ️ App Version")
                 Spacer()
                 Text("1.0.0")
-                    .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
-            }
-            HStack {
-                Text(isKorean ? "🎲 앱 이름" : "🎲 App Name")
-                Spacer()
-                Text("Quirkly")
                     .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
             }
         } header: {
