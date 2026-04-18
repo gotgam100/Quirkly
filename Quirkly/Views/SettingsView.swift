@@ -98,7 +98,7 @@ struct SettingsView: View {
             ) {
                 Button(isKorean ? "확인" : "OK", role: .cancel) {}
             } message: {
-                Text(isKorean ? "마음만 받을께요. 감사합니다!" : "I appreciate your support! Thank you!")
+                Text(isKorean ? "마음만 받을께요. 즐거운 하루 되세요!😉" : "I appreciate your support! Thank you!")
             }
         }
     }

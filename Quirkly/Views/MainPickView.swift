@@ -55,7 +55,7 @@ struct MainPickView: View {
 
                         // 버튼 섹션
                         actionButtons
-                            .padding(.top, -22)
+                            .padding(.top, -28)
 
                         Spacer(minLength: 40)
                     }
@@ -67,7 +67,7 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle("Quirkly!")
+            .navigationTitle("Quirkly!🤘")
             .navigationBarTitleDisplayMode(.large)
             .task {
                 if !hasLoadedInitial {
