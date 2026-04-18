@@ -277,7 +277,7 @@ struct MainPickView: View {
                     }
                 }
             } else {
-                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow\nwith new quirkiness! 🌈")
+                Text(isKorean ? "내일 새로운 엉뚱함으로 만나요! 🌈" : "See you tomorrow with new quirkiness! 🌈")
                     .font(.system(size: 16, weight: .black, design: .rounded))
                     .foregroundStyle(Color.quirklyBlue)
                     .padding(.top, 10)
@@ -327,7 +327,8 @@ struct MainPickView: View {
         let savedDate = settings.currentTaskDate.map { Calendar.current.startOfDay(for: $0) }
 
         if let savedDate = savedDate, savedDate == today, settings.currentTaskId > 0 {
-            let descriptor = FetchDescriptor<QuirkyTask>(predicate: #Predicate { $0.taskId == settings.currentTaskId })
+            let taskId = settings.currentTaskId
+            let descriptor = FetchDescriptor<QuirkyTask>(predicate: #Predicate { $0.taskId == taskId })
             if let task = try? modelContext.fetch(descriptor).first {
                 currentTask = task
             } else {
