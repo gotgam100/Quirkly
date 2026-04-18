@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import MessageUI
 import StoreKit
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -23,6 +24,9 @@ struct SettingsView: View {
     @State private var reminderTime: Date = Date()
     @State private var showMailComposer = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
+    @State private var showFileImporter = false
+    @State private var showExportSuccess = false
+    @State private var exportError: String?
     @Environment(\.requestReview) var requestReview
     
     private var isKorean: Bool { settings.language.resolvedIsKorean }
@@ -63,6 +67,18 @@ struct SettingsView: View {
             }
             .navigationTitle(isKorean ? "설정" : "Settings")
             .navigationBarTitleDisplayMode(.large)
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [UTType.json],
+                onCompletion: { result in
+                    switch result {
+                    case .success(let url):
+                        importRecords(from: url)
+                    case .failure(let error):
+                        exportError = error.localizedDescription
+                    }
+                }
+            )
             .task { updateStreak() }
             .alert(
                 isKorean ? "기록 초기화" : "Reset Records",
@@ -268,14 +284,6 @@ struct SettingsView: View {
                         .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
                 }
             }
-
-            @Bindable var s = settings
-            Toggle(isOn: $s.iCloudSyncEnabled) {
-                Text(isKorean ? "☁️ 내 정보 iCloud 동기화" : "☁️ iCloud Sync My Info")
-                    .foregroundStyle(Color.quirklyTextDark)
-            }
-            .tint(.quirklyBlue)
-            .disabled(repository.isLoading)
         } header: {
             Text(isKorean ? "데이터 연동" : "Data & Sync")
         }
@@ -299,6 +307,57 @@ struct SettingsView: View {
                 Text(isKorean ? "\(streak)일" : "\(streak) days")
                     .font(.system(.body, design: .rounded, weight: .bold))
                     .foregroundStyle(Color.quirklyRed)
+            }
+
+            Divider()
+                .padding(.vertical, 8)
+
+            Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
+                .font(.caption)
+                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+
+            HStack(spacing: 12) {
+                Button {
+                    exportRecords()
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.up.doc")
+                        Text(isKorean ? "내보내기" : "Export")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color.quirklyTextLight)
+                    .padding(.vertical, 8)
+                    .background(Color.quirklyBlue)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    showFileImporter = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.down.doc")
+                        Text(isKorean ? "가져오기" : "Import")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Color.quirklyTextLight)
+                    .padding(.vertical, 8)
+                    .background(Color.quirklyGreen)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+            }
+
+            if showExportSuccess {
+                Text(isKorean ? "✅ 기록이 저장되었습니다." : "✅ Records exported successfully")
+                    .font(.caption)
+                    .foregroundStyle(Color.quirklyGreen)
+            }
+
+            if let error = exportError {
+                Text("⚠️ \(error)")
+                    .font(.caption)
+                    .foregroundStyle(.red)
             }
 
         } header: {
@@ -337,7 +396,7 @@ struct SettingsView: View {
             HStack {
                 Text(isKorean ? "🎲 앱 이름" : "🎲 App Name")
                 Spacer()
-                Text("Quirkly : 나의 엉뚱일지")
+                Text("Quirkly")
                     .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
             }
         } header: {
@@ -413,6 +472,88 @@ struct SettingsView: View {
     
     private func updateStreak() {
         streak = repository.currentStreak(modelContext: modelContext)
+    }
+
+    private func exportRecords() {
+        do {
+            let records = try modelContext.fetch(FetchDescriptor<QuirkyRecord>())
+            let dtos = records.map { record -> [String: Any] in
+                [
+                    "taskId": record.taskId,
+                    "taskTitleKo": record.taskTitleKo,
+                    "taskTitleEn": record.taskTitleEn,
+                    "taskEmoji": record.taskEmoji,
+                    "status": record.statusRaw,
+                    "date": record.date.timeIntervalSince1970,
+                    "category": record.taskCategoryRaw
+                ]
+            }
+
+            let jsonData = try JSONSerialization.data(withJSONObject: dtos, options: .prettyPrinted)
+            let fileName = "quirkly_records_\(Date().timeIntervalSince1970).json"
+
+            if let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+                let fileURL = documentsDirectory.appendingPathComponent(fileName)
+                try jsonData.write(to: fileURL)
+
+                showExportSuccess = true
+                exportError = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    showExportSuccess = false
+                }
+            }
+        } catch {
+            exportError = isKorean ? "내보내기 실패: \(error.localizedDescription)" : "Export failed: \(error.localizedDescription)"
+        }
+    }
+
+    private func importRecords(from url: URL) {
+        do {
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+
+            let data = try Data(contentsOf: url)
+            guard let jsonArray = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+                exportError = isKorean ? "잘못된 파일 형식입니다." : "Invalid file format"
+                return
+            }
+
+            for dto in jsonArray {
+                guard let taskId = dto["taskId"] as? Int,
+                      let taskTitleKo = dto["taskTitleKo"] as? String,
+                      let taskTitleEn = dto["taskTitleEn"] as? String,
+                      let taskEmoji = dto["taskEmoji"] as? String,
+                      let statusStr = dto["status"] as? String,
+                      let _ = RecordStatus(rawValue: statusStr),
+                      let dateInterval = dto["date"] as? TimeInterval,
+                      let categoryStr = dto["category"] as? String,
+                      let _ = TaskCategory(rawValue: categoryStr) else {
+                    continue
+                }
+
+                let record = QuirkyRecord(
+                    taskId: taskId,
+                    taskTitleKo: taskTitleKo,
+                    taskTitleEn: taskTitleEn,
+                    taskEmoji: taskEmoji,
+                    statusRaw: statusStr,
+                    date: Date(timeIntervalSince1970: dateInterval),
+                    taskCategoryRaw: categoryStr
+                )
+
+                modelContext.insert(record)
+            }
+
+            try modelContext.save()
+            exportError = nil
+            showExportSuccess = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                showExportSuccess = false
+            }
+            updateStreak()
+        } catch {
+            exportError = isKorean ? "가져오기 실패: \(error.localizedDescription)" : "Import failed: \(error.localizedDescription)"
+        }
     }
 }
 

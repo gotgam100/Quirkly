@@ -48,12 +48,14 @@ struct MainPickView: View {
                         // 메인 카드
                         missionCard
                             .padding(.horizontal, 24)
+                            .frame(height: 320)
 
                         // 오늘 날짜 (테스트용 리셋 버튼)
                         dateDisplaySection
 
                         // 버튼 섹션
                         actionButtons
+                            .padding(.top, -22)
 
                         Spacer(minLength: 40)
                     }
@@ -65,7 +67,7 @@ struct MainPickView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle("Quirkly : 나의 엉뚱일지")
+            .navigationTitle("Quirkly!")
             .navigationBarTitleDisplayMode(.large)
             .task {
                 if !hasLoadedInitial {
@@ -93,12 +95,12 @@ struct MainPickView: View {
     // MARK: - 서브 타이틀 (설명글)
     private var subtitleSection: some View {
         HStack {
-            Text(isKorean ? "오늘은 어떤 엉뚱한 일을 해볼까?" : "What quirky thing will you do today?")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(Color.quirklyBlue)
+            Text(isKorean ? "엉뚱한 일 하나, 오늘도 엉뚱한 하루" : "What quirky thing will you do today?")
+                .font(.system(size: 14, weight: .regular))
+                .foregroundStyle(Color.quirklyBgDark)
             Spacer()
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 22)
     }
     
     // MARK: - 미션 카드 (상태별 메시지)
@@ -241,7 +243,7 @@ struct MainPickView: View {
                         .buttonStyle(QuirklyButtonStyle(color: .quirklyRed))
                         .scaleEffect(passScale)
                         .opacity(passFlash ? 0.25 : 1.0)
-                        .disabled(todayPassed >= 3 || isSpinning)
+                        .disabled(isSpinning)
 
                         Button(action: {
                             tapButton($decideScale)
@@ -372,17 +374,20 @@ struct MainPickView: View {
     }
     
     private func passMission() {
+        updateStats()
+
+        // 패스를 3번 모두 썼을 때는 반짝이기만 하고 작동 안 함
+        if todayPassed >= 3 {
+            flashPassButton()
+            return
+        }
+
         guard let task = currentTask else { return }
         let record = QuirkyRecord(task: task, status: .passed)
         modelContext.insert(record)
         try? modelContext.save()
 
         updateStats()
-
-        // 패스를 3번 모두 썼을 때만 깜빡임
-        if todayPassed >= 3 {
-            flashPassButton()
-        }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             spinAndPick()

@@ -74,4 +74,14 @@ final class QuirkyRecord {
         self.date = Date()
         self.statusRaw = status.rawValue
     }
+
+    init(taskId: Int, taskTitleKo: String, taskTitleEn: String, taskEmoji: String, statusRaw: String, date: Date, taskCategoryRaw: String) {
+        self.taskId = taskId
+        self.taskTitleKo = taskTitleKo
+        self.taskTitleEn = taskTitleEn
+        self.taskEmoji = taskEmoji
+        self.statusRaw = statusRaw
+        self.date = date
+        self.taskCategoryRaw = taskCategoryRaw
+    }
 }
