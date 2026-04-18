@@ -292,6 +292,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
             }
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
 
             Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
                 .font(.caption)
