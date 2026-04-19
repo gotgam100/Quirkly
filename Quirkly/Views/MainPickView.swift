@@ -50,7 +50,7 @@ struct MainPickView: View {
                             .padding(.horizontal, 24)
                             .frame(height: 320)
 
-                        // 오늘 날짜 (테스트용 리셋 버튼)
+                        // 오늘 날짜
                         dateDisplaySection
 
                         // 버튼 섹션
@@ -186,29 +186,27 @@ struct MainPickView: View {
         }
     }
     
-    // MARK: - 오늘 날짜 섹션 (테스트용: 클릭으로 제한 리셋)
+    // MARK: - 오늘 날짜 섹션
     private var dateDisplaySection: some View {
-        Button(action: resetDailyLimit) {
-            HStack {
-                Image(systemName: "calendar")
-                Text(formattedDate)
-            }
-            .font(.system(size: 15, weight: .black, design: .rounded))
-            .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
-            .padding(.horizontal, 16)
-            .padding(.vertical, 6)
-            .background(Color.quirklyBlue.opacity(0.1))
-            .clipShape(Capsule())
+        HStack {
+            Image(systemName: "calendar")
+            Text(formattedDate)
         }
+        .font(.system(size: 15, weight: .black, design: .rounded))
+        .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
+        .background(Color.quirklyBlue.opacity(0.1))
+        .clipShape(Capsule())
     }
-    
+
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.locale = isKorean ? Locale(identifier: "ko_KR") : Locale(identifier: "en_US")
         formatter.dateFormat = isKorean ? "yyyy. MM. dd. (E)" : "MMM dd, yyyy (E)"
         return formatter.string(from: Date())
     }
-    
+
     // MARK: - 버튼 섹션 로직
     private var actionButtons: some View {
         VStack(spacing: 12) {
@@ -436,28 +434,6 @@ struct MainPickView: View {
         }
     }
 
-    // 테스트용: 날짜 버튼 클릭으로 일일 제한 리셋 (DB 포함)
-    private func resetDailyLimit() {
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-        let predicate = #Predicate<QuirkyRecord> {
-            $0.date >= startOfDay && $0.date < endOfDay
-        }
-        if let records = try? modelContext.fetch(FetchDescriptor<QuirkyRecord>(predicate: predicate)) {
-            records.forEach { modelContext.delete($0) }
-            try? modelContext.save()
-        }
-        withAnimation {
-            currentTask = nil
-            todayCompleted = 0
-            todayPassed = 0
-            isDecided = false
-            settings.currentTaskId = 0
-            settings.currentTaskDate = nil
-            settings.isTaskDecided = false
-        }
-    }
 }
 
 // MARK: - 하단 필수 컴포넌트들 (에러 방지용 재정의)
