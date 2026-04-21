@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import WidgetKit
 
 // MARK: - 언어 설정
 
@@ -82,7 +83,11 @@ final class AppSettings {
     // MARK: - Properties
     
     var language: AppLanguage {
-        didSet { defaults.set(language.rawValue, forKey: Keys.language) }
+        didSet {
+            defaults.set(language.rawValue, forKey: Keys.language)
+            UserDefaults(suiteName: "group.baekmac.quirkly")?.set(language.rawValue, forKey: Keys.language)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     var theme: AppTheme {

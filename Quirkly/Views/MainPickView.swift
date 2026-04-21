@@ -77,6 +77,10 @@ struct MainPickView: View {
                     hasLoadedInitial = true
                 }
             }
+            .onChange(of: settings.currentTaskId) {
+                updateStats()
+                restoreCurrentTask()
+            }
         }
     }
     
@@ -250,6 +254,7 @@ struct MainPickView: View {
                                 isDecided = true
                                 settings.isTaskDecided = true
                             }
+                            WidgetDataService.updateWidgetData(task: currentTask, isCompleted: false, language: settings.language.rawValue)
                         }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "checkmark.circle")
@@ -360,9 +365,6 @@ struct MainPickView: View {
                 withAnimation(.spring(response: 0.5, dampingFraction: 0.5)) {
                     cardScale = 1.0
                     isSpinning = false
-                    
-                    // 위젯 업데이트
-                    WidgetDataService.updateWidgetData(task: currentTask, isCompleted: false)
                 }
             }
         }

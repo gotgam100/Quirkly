@@ -26,6 +26,8 @@ struct SettingsView: View {
     @State private var showFileImporter = false
     @State private var exportError: String?
     @State private var showCoffeeAlert = false
+    @State private var secretCodeSequence: [String] = []
+    @State private var showSecretUnlockAlert = false
     @Environment(\.requestReview) var requestReview
     
     private var isKorean: Bool { settings.language.resolvedIsKorean }
@@ -91,6 +93,16 @@ struct SettingsView: View {
                 Button(isKorean ? "확인" : "OK", role: .cancel) {}
             } message: {
                 Text(isKorean ? "마음만 받을께요. 즐거운 하루 되세요!😉" : "I appreciate your support! Thank you!")
+            }
+            .alert(
+                isKorean ? "🎲 다시 뽑기가 활성화되었어요!" : "🎲 Ready to pick again!",
+                isPresented: $showSecretUnlockAlert
+            ) {
+                Button(isKorean ? "확인" : "OK", role: .cancel) {
+                    resetTodayTask()
+                }
+            } message: {
+                Text(isKorean ? "오늘의 엉뚱한 일을 다시 뽑을 수 있습니다." : "You can now pick a new quirky task for today.")
             }
         }
     }
@@ -209,6 +221,7 @@ struct SettingsView: View {
 
             // 개발자에게 커피 쏘기 (인앱 구매)
             Button {
+                checkSecretCode(action: "coffee")
                 Task {
                     await purchaseCoffee()
                 }
@@ -340,6 +353,7 @@ struct SettingsView: View {
         Section {
             // 이용약관
             Button {
+                checkSecretCode(action: "terms")
                 if let url = URL(string: "https://gotgam100.github.io/Quirkly/terms.html") {
                     UIApplication.shared.open(url)
                 }
@@ -372,6 +386,7 @@ struct SettingsView: View {
 
             // 오픈소스 라이선스
             Button {
+                checkSecretCode(action: "licenses")
                 if let url = URL(string: "https://gotgam100.github.io/Quirkly/licenses.html") {
                     UIApplication.shared.open(url)
                 }
@@ -392,7 +407,46 @@ struct SettingsView: View {
     }
     
     // MARK: - Actions
-    
+
+    private func checkSecretCode(action: String) {
+        secretCodeSequence.append(action)
+
+        if secretCodeSequence.count > 3 {
+            secretCodeSequence.removeFirst()
+        }
+
+        if secretCodeSequence == ["terms", "licenses", "coffee"] {
+            showSecretUnlockAlert = true
+            secretCodeSequence.removeAll()
+        }
+    }
+
+    private func resetTodayTask() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+
+        let descriptor = FetchDescriptor<QuirkyRecord>(
+            predicate: #Predicate { record in
+                record.date >= today && record.date < tomorrow
+            }
+        )
+
+        if let records = try? modelContext.fetch(descriptor) {
+            for record in records {
+                if record.status == .completed {
+                    modelContext.delete(record)
+                }
+            }
+        }
+
+        try? modelContext.save()
+
+        settings.currentTaskId = 0
+        settings.currentTaskDate = nil
+        settings.isTaskDecided = false
+        WidgetDataService.updateWidgetData(task: nil, isCompleted: false)
+    }
+
     private func resetAllRecords() {
         try? modelContext.delete(model: QuirkyRecord.self)
         try? modelContext.save()

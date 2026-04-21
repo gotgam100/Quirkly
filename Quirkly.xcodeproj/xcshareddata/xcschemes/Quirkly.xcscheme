@@ -74,7 +74,6 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "The CFBundleShortVersionString of an app extension (&apos;1.0&apos;) must match that of its containing parent app (&apos;1.0.0&apos;).&#10;"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

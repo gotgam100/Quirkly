@@ -76,61 +76,51 @@ struct QuirklyWidgetEntryView: View {
 
     var body: some View {
         if let taskData = entry.taskData {
-            VStack(spacing: 8) {
-                HStack {
-                    Text("🎲 Quirkly")
-                        .font(.system(size: 10, weight: .black, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.8))
+            if taskData.isCompleted {
+                // 완료 상태
+                VStack(spacing: 12) {
+                    Text("🌈")
+                        .font(.system(size: family == .systemSmall ? 44 : 56))
+                    Text(entry.isKorean ? "내일도 엉뚱하게" : "Stay quirky tomorrow!")
+                        .font(.system(size: family == .systemSmall ? 13 : 16, weight: .black, design: .rounded))
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .widgetURL(URL(string: "quirkly://open"))
+            } else {
+                // 결정한 상태
+                VStack(spacing: 8) {
                     Spacer()
-                    if taskData.isCompleted {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.white.opacity(0.9))
-                            .font(.system(size: 12))
-                    }
+
+                    Text(taskData.emoji)
+                        .font(.system(size: family == .systemSmall ? 44 : 56))
+
+                    Text(entry.isKorean ? taskData.taskTitle : taskData.taskTitleEn)
+                        .font(.system(size: family == .systemSmall ? 11 : 14, weight: .bold, design: .rounded))
+                        .multilineTextAlignment(.center)
+                        .lineLimit(3)
+
+                    Spacer()
                 }
-
-                Spacer()
-
-                Text(taskData.emoji)
-                    .font(.system(size: family == .systemSmall ? 44 : 56))
-
-                Text(entry.isKorean ? taskData.taskTitle : taskData.taskTitleEn)
-                    .font(.system(size: family == .systemSmall ? 11 : 14, weight: .bold, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.white)
-                    .lineLimit(3)
-
-                Spacer()
-
-                if taskData.isCompleted {
-                    Text(entry.isKorean ? "완료!" : "Done!")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(.white.opacity(0.3))
-                        .clipShape(Capsule())
-                        .foregroundStyle(.white)
-                } else {
-                    Text(entry.isKorean ? "탭해서 확인하기" : "Tap to open")
-                        .font(.system(size: 10, weight: .medium, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.7))
-                }
+                .padding(12)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .widgetURL(URL(string: "quirkly://open"))
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(categoryColor(taskData.category))
-            .widgetURL(URL(string: "quirkly://open"))
         } else {
+            // 뽑기 전 상태
             VStack(spacing: 8) {
                 Text("🎲")
                     .font(.system(size: 44))
                 Text("Quirkly")
                     .font(.system(size: 14, weight: .black, design: .rounded))
                     .foregroundStyle(Color(red: 0.17, green: 0.31, blue: 0.91))
-                Text(entry.isKorean ? "앱을 열어\n오늘의 미션을\n뽑아보세요!" : "Open app to\npick today's\nquirky task!")
+                Text(entry.isKorean ? "오늘의 엉뚱함을\n뽑아보세요!" : "Pick today's\nquirky task!")
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(14)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -158,7 +148,7 @@ struct QuirklyWidget: Widget {
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: QuirklyProvider()) { entry in
             QuirklyWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(.fill.secondary, for: .widget)
         }
         .configurationDisplayName("Quirkly")
         .description("오늘의 엉뚱한 일을 홈 화면에서 확인하세요.")

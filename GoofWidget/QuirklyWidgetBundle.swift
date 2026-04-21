@@ -12,7 +12,5 @@ import SwiftUI
 struct QuirklyWidgetBundle: WidgetBundle {
     var body: some Widget {
         QuirklyWidget()
-        QuirklyWidgetControl()
-        QuirklyWidgetLiveActivity()
     }
 }
