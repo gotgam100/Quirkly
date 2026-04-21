@@ -10,24 +10,25 @@ import WidgetKit
 
 struct WidgetData: Codable {
     let taskTitle: String
+    let taskTitleEn: String
     let emoji: String
     let category: String
     let isCompleted: Bool
 }
 
 struct WidgetDataService {
-    // TODO: 실제 App Group ID로 교체 필요 (예: group.com.yourname.quirkly)
-    // 현재는 일반 UserDefaults를 사용하지만, 위젯 연동 시에는 App Group이 필수입니다.
     private static let suiteName = "group.baekmac.quirkly"
     private static let defaults = UserDefaults(suiteName: suiteName) ?? .standard
     private static let key = "quirkly_widget_data"
-    
-    static func updateWidgetData(task: QuirkyTask?, isCompleted: Bool) {
+    private static let languageKey = "quirkly_language"
+
+    static func updateWidgetData(task: QuirkyTask?, isCompleted: Bool, language: String = "korean") {
         if let task = task {
             let data = WidgetData(
                 taskTitle: task.titleKo,
+                taskTitleEn: task.titleEn,
                 emoji: task.emoji,
-                category: task.category.rawValue,
+                category: task.categoryRaw,
                 isCompleted: isCompleted
             )
             if let encoded = try? JSONEncoder().encode(data) {
@@ -36,11 +37,10 @@ struct WidgetDataService {
         } else {
             defaults.removeObject(forKey: key)
         }
-        
-        // 위젯 강제 업데이트
+        defaults.set(language, forKey: languageKey)
         WidgetCenter.shared.reloadAllTimelines()
     }
-    
+
     static func getWidgetData() -> WidgetData? {
         guard let data = defaults.data(forKey: key) else { return nil }
         return try? JSONDecoder().decode(WidgetData.self, from: data)

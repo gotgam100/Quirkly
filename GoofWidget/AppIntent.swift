@@ -2,17 +2,11 @@
 //  AppIntent.swift
 //  QuirklyWidget
 //
-//  Created by BAEKMAC on 4/14/26.
-//
 
 import WidgetKit
 import AppIntents
 
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
-    static var title: LocalizedStringResource { "Configuration" }
-    static var description: IntentDescription { "This is an example widget." }
-
-    // An example configurable parameter.
-    @Parameter(title: "Favorite Emoji", default: "😃")
-    var favoriteEmoji: String
+    static var title: LocalizedStringResource { "Quirkly 위젯" }
+    static var description: IntentDescription { "오늘의 엉뚱한 일을 홈 화면에서 확인하세요." }
 }
