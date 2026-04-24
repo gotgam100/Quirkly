@@ -157,6 +157,10 @@ struct SettingsView: View {
                         }
                     }
             }
+
+            Text(isKorean ? "위젯을 이용해보세요." : "Try using the widget!")
+                .font(.caption)
+                .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
         } header: {
             Text(isKorean ? "알림" : "Notifications")
         }
@@ -206,7 +210,7 @@ struct SettingsView: View {
 
             // 앱스토어 별점 남기기
             Button {
-                if let url = URL(string: "https://apps.apple.com/app/quirkly/id6740123456") {
+                if let url = URL(string: "https://apps.apple.com/us/app/quirkly-%EC%97%89%EB%9A%B1%ED%95%9C-%ED%95%98%EB%A3%A8-%EB%A7%8C%EB%93%A4%EA%B8%B0/id6762527265") {
                     UIApplication.shared.open(url)
                 }
             } label: {
