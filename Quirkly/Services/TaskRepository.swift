@@ -2,7 +2,7 @@
 //  TaskRepository.swift
 //  Quirkly
 //
-//  Google Sheets CSV 연동 + SwiftData 캐시 Repository
+//  SwiftData 태스크 Repository
 //
 
 import Foundation
@@ -10,71 +10,14 @@ import SwiftData
 
 @Observable
 final class TaskRepository {
-    
-    // MARK: - Google Sheets 설정
-    private let sheetID = "1mOJS4oV7C_blOZ8coExb7bCUhWhxFj9MhR8f4zNoNkw"
-    
-    private var exportURL: URL {
-        URL(string: "https://docs.google.com/spreadsheets/d/\(sheetID)/export?format=csv&gid=0")!
-    }
-    
-    // MARK: - 상태
-    var isLoading = false
-    var lastError: String?
-    var taskCount = 0
-    
-    // MARK: - 원격에서 최신 태스크 가져오기 + SwiftData 저장
-    
-    @MainActor
-    func syncFromGoogleSheets(modelContext: ModelContext) async {
-        isLoading = true
-        lastError = nil
-        
-        do {
-            let (data, response) = try await URLSession.shared.data(from: exportURL)
-            
-            // HTTP 응답 확인
-            if let httpResponse = response as? HTTPURLResponse,
-               httpResponse.statusCode != 200 {
-                lastError = "서버 응답 오류: \(httpResponse.statusCode)"
-                isLoading = false
-                return
-            }
-            
-            let dtos = CSVParser.parse(data)
-            
-            guard !dtos.isEmpty else {
-                lastError = "파싱된 데이터가 없습니다"
-                isLoading = false
-                return
-            }
-            
-            // 기존 태스크 모두 삭제 후 새로 삽입
-            try modelContext.delete(model: QuirkyTask.self)
-            
-            for dto in dtos {
-                let task = dto.toModel()
-                modelContext.insert(task)
-            }
-            
-            try modelContext.save()
-            taskCount = dtos.count
-            
-        } catch {
-            lastError = error.localizedDescription
-        }
-        
-        isLoading = false
-    }
-    
-    // MARK: - 번들 기본 데이터 로드 (오프라인 / 첫 실행)
+
+    // MARK: - 번들 기본 데이터 로드 (첫 실행)
     
     @MainActor
     func loadBundledTasks(modelContext: ModelContext) {
         // 이미 데이터가 있으면 스킵
         let descriptor = FetchDescriptor<QuirkyTask>()
         if let count = try? modelContext.fetchCount(descriptor), count > 0 {
-            taskCount = count
             return
         }
 
@@ -101,13 +44,18 @@ final class TaskRepository {
             return
         }
 
+        // 기존 taskId 목록 조회 (CloudKit 중복 방지)
+        let existing = (try? modelContext.fetch(FetchDescriptor<QuirkyTask>())) ?? []
+        let existingIds = Set(existing.map { $0.taskId })
+
+        var inserted = 0
         for dto in dtos {
-            let task = dto.toModel()
-            modelContext.insert(task)
+            guard !existingIds.contains(dto.id) else { continue }
+            modelContext.insert(dto.toModel())
+            inserted += 1
         }
 
-        try? modelContext.save()
-        taskCount = dtos.count
+        if inserted > 0 { try? modelContext.save() }
     }
     
     // MARK: - 랜덤 태스크 선택

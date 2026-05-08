@@ -49,17 +49,17 @@ struct QuirklyApp: App {
     }
     
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            QuirkyTask.self,
-            QuirkyRecord.self,
-        ])
-        let modelConfiguration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: false
-        )
-        
+        let schema = Schema([QuirkyTask.self, QuirkyRecord.self])
+        let isICloudEnabled = UserDefaults.standard.bool(forKey: ICloudSyncService.iCloudEnabledKey)
+
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            if isICloudEnabled {
+                let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
+                return try ModelContainer(for: schema, configurations: [config])
+            } else {
+                let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+                return try ModelContainer(for: schema, configurations: [config])
+            }
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -67,7 +67,11 @@ struct QuirklyApp: App {
     
     @State private var settings = AppSettings()
     @State private var repository = TaskRepository()
-    
+    @State private var showWhatsNew = false
+
+    private let currentVersion = "1.1.0"
+    private let lastSeenVersionKey = "quirkly_last_seen_version"
+
     var body: some Scene {
         WindowGroup {
             MainTabView()
@@ -75,6 +79,9 @@ struct QuirklyApp: App {
                 .environment(repository)
                 .preferredColorScheme(colorScheme)
                 .onAppear {
+                    // iCloud 전환 후 기록 마이그레이션
+                    ICloudSyncService.performPendingMigration(container: sharedModelContainer)
+
                     if settings.notificationEnabled {
                         NotificationManager.shared.requestPermission()
                         NotificationManager.shared.scheduleDailyReminder(
@@ -83,9 +90,27 @@ struct QuirklyApp: App {
                             isKorean: settings.language.resolvedIsKorean
                         )
                     }
+                    checkWhatsNew()
+                }
+                .sheet(isPresented: $showWhatsNew) {
+                    WhatsNewView(isKorean: settings.language.resolvedIsKorean) {
+                        UserDefaults.standard.set(currentVersion, forKey: lastSeenVersionKey)
+                        showWhatsNew = false
+                    }
+                    .presentationDetents([.large])
+                    .interactiveDismissDisabled(true)
                 }
         }
         .modelContainer(sharedModelContainer)
+    }
+
+    private func checkWhatsNew() {
+        let lastSeen = UserDefaults.standard.string(forKey: lastSeenVersionKey) ?? ""
+        if lastSeen != currentVersion {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                showWhatsNew = true
+            }
+        }
     }
     
     private var colorScheme: ColorScheme? {

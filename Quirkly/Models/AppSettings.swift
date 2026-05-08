@@ -71,9 +71,6 @@ final class AppSettings {
         static let notificationEnabled = "quirkly_notification_enabled"
         static let notificationHour = "quirkly_notification_hour"
         static let notificationMinute = "quirkly_notification_minute"
-        static let totalCompleted = "quirkly_total_completed"
-        static let longestStreak = "quirkly_longest_streak"
-        static let lastSyncDate = "quirkly_last_sync_date"
         static let iCloudSyncEnabled = "quirkly_icloud_sync"
         static let currentTaskId = "quirkly_current_task_id"
         static let currentTaskDate = "quirkly_current_task_date"
@@ -106,10 +103,6 @@ final class AppSettings {
         didSet { defaults.set(notificationMinute, forKey: Keys.notificationMinute) }
     }
 
-    var lastSyncDate: Date? {
-        didSet { defaults.set(lastSyncDate, forKey: Keys.lastSyncDate) }
-    }
-
     var iCloudSyncEnabled: Bool {
         didSet { defaults.set(iCloudSyncEnabled, forKey: Keys.iCloudSyncEnabled) }
     }
@@ -134,7 +127,6 @@ final class AppSettings {
         self.notificationEnabled = defaults.bool(forKey: Keys.notificationEnabled)
         self.notificationHour = defaults.object(forKey: Keys.notificationHour) == nil ? 8 : defaults.integer(forKey: Keys.notificationHour)
         self.notificationMinute = defaults.object(forKey: Keys.notificationMinute) == nil ? 0 : defaults.integer(forKey: Keys.notificationMinute)
-        self.lastSyncDate = defaults.object(forKey: Keys.lastSyncDate) as? Date
         self.iCloudSyncEnabled = defaults.object(forKey: Keys.iCloudSyncEnabled) == nil ? false : defaults.bool(forKey: Keys.iCloudSyncEnabled)
         self.currentTaskId = defaults.object(forKey: Keys.currentTaskId) == nil ? 0 : defaults.integer(forKey: Keys.currentTaskId)
         self.currentTaskDate = defaults.object(forKey: Keys.currentTaskDate) as? Date

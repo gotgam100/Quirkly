@@ -40,13 +40,13 @@ enum RecordStatus: String, Codable {
 
 @Model
 final class QuirkyRecord {
-    var taskId: Int
-    var taskEmoji: String
-    var taskTitleKo: String
-    var taskTitleEn: String
-    var taskCategoryRaw: String
-    var date: Date
-    var statusRaw: String
+    var taskId: Int = 0
+    var taskEmoji: String = ""
+    var taskTitleKo: String = ""
+    var taskTitleEn: String = ""
+    var taskCategoryRaw: String = ""
+    var date: Date = Date()
+    var statusRaw: String = ""
     
     var status: RecordStatus {
         get { RecordStatus(rawValue: statusRaw) ?? .completed }

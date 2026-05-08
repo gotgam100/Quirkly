@@ -86,12 +86,12 @@ enum TaskDifficulty: String, Codable, CaseIterable {
 
 @Model
 final class QuirkyTask {
-    @Attribute(.unique) var taskId: Int
-    var emoji: String
-    var titleKo: String
-    var titleEn: String
-    var categoryRaw: String
-    var difficultyRaw: String
+    var taskId: Int = 0
+    var emoji: String = ""
+    var titleKo: String = ""
+    var titleEn: String = ""
+    var categoryRaw: String = ""
+    var difficultyRaw: String = ""
     
     var category: TaskCategory {
         get { TaskCategory(rawValue: categoryRaw) ?? .solo }

@@ -128,16 +128,6 @@ struct QuirklyWidgetEntryView: View {
         }
     }
 
-    private func categoryColor(_ category: String) -> Color {
-        switch category {
-        case "solo":    return Color(red: 0.53, green: 0.81, blue: 0.98)
-        case "social":  return Color(red: 1.0, green: 0.75, blue: 0.60)
-        case "creative": return Color(red: 0.80, green: 0.70, blue: 0.98)
-        case "active":  return Color(red: 0.60, green: 0.90, blue: 0.75)
-        case "mindful": return Color(red: 1.0, green: 0.88, blue: 0.55)
-        default:        return Color(red: 0.90, green: 0.90, blue: 0.90)
-        }
-    }
 }
 
 // MARK: - 위젯 정의

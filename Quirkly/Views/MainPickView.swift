@@ -31,6 +31,7 @@ struct MainPickView: View {
     @State private var passScale: CGFloat = 1.0
     @State private var decideScale: CGFloat = 1.0
     @State private var doneScale: CGFloat = 1.0
+    @State private var isCompleting = false
 
     private var isKorean: Bool { settings.language.resolvedIsKorean }
     
@@ -69,6 +70,12 @@ struct MainPickView: View {
             }
             .navigationTitle("Quirkly!🤘")
             .navigationBarTitleDisplayMode(.large)
+            .onChange(of: isDecided) { _, newValue in
+                updateNavBarAppearance(focused: newValue)
+            }
+            .onDisappear {
+                updateNavBarAppearance(focused: false)
+            }
             .task {
                 if !hasLoadedInitial {
                     repository.loadBundledTasks(modelContext: modelContext)
@@ -87,14 +94,19 @@ struct MainPickView: View {
     // MARK: - 배경
     private var backgroundView: some View {
         ZStack {
-            Color.quirklyBgLight.ignoresSafeArea()
-            GeometryReader { geo in
-                SparkleView(size: 20, color: .quirklyYellow).position(x: 40, y: 80)
-                SparkleView(size: 14, color: .quirklyPink).position(x: geo.size.width - 50, y: 120)
-                SparkleView(size: 16, color: .quirklyGreen).position(x: 60, y: geo.size.height - 80)
-                SparkleView(size: 10, color: .quirklyBlue).position(x: geo.size.width - 30, y: geo.size.height - 100)
+            if isDecided {
+                Color.black.opacity(0.88).ignoresSafeArea()
+            } else {
+                Color.quirklyBgLight.ignoresSafeArea()
+                GeometryReader { geo in
+                    SparkleView(size: 20, color: .quirklyYellow).position(x: 40, y: 80)
+                    SparkleView(size: 14, color: .quirklyPink).position(x: geo.size.width - 50, y: 120)
+                    SparkleView(size: 16, color: .quirklyGreen).position(x: 60, y: geo.size.height - 80)
+                    SparkleView(size: 10, color: .quirklyBlue).position(x: geo.size.width - 30, y: geo.size.height - 100)
+                }
             }
         }
+        .animation(.easeInOut(duration: 0.4), value: isDecided)
     }
     
     // MARK: - 서브 타이틀 (설명글)
@@ -197,10 +209,10 @@ struct MainPickView: View {
             Text(formattedDate)
         }
         .font(.system(size: 15, weight: .black, design: .rounded))
-        .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
+        .foregroundStyle(isDecided ? Color.white.opacity(0.85) : Color.quirklyTextDark.opacity(0.6))
         .padding(.horizontal, 16)
         .padding(.vertical, 6)
-        .background(Color.quirklyBlue.opacity(0.1))
+        .background(isDecided ? Color.white.opacity(0.15) : Color.quirklyBlue.opacity(0.1))
         .clipShape(Capsule())
     }
 
@@ -214,7 +226,9 @@ struct MainPickView: View {
     // MARK: - 버튼 섹션 로직
     private var actionButtons: some View {
         VStack(spacing: 12) {
-            if todayCompleted < 1 {
+            if isCompleting && todayCompleted < 1 {
+                // 완료 처리 중 버튼 숨김
+            } else if todayCompleted < 1 {
                 if currentTask == nil {
                     // 최초 뽑기 버튼
                     Button(action: {
@@ -239,7 +253,7 @@ struct MainPickView: View {
                         }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "arrow.uturn.forward")
-                                Text(isKorean ? "패스 (\(3 - todayPassed)/3)" : "Pass (\(3 - todayPassed)/3)")
+                                Text(isKorean ? "패스 (\(2 - todayPassed)/3)" : "Pass (\(2 - todayPassed)/3)")
                             }
                             .frame(maxWidth: .infinity)
                         }
@@ -279,7 +293,7 @@ struct MainPickView: View {
                         }
                         .buttonStyle(QuirklyButtonStyle(color: .quirklyGreen))
                         .scaleEffect(doneScale)
-                        .disabled(isSpinning)
+                        .disabled(isSpinning || isCompleting)
                     }
                 }
             } else {
@@ -294,6 +308,20 @@ struct MainPickView: View {
     }
 
     // MARK: - 로직 함수들
+
+    private func updateNavBarAppearance(focused: Bool) {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        if focused {
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        } else {
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+        }
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
 
     private func tapButton(_ scale: Binding<CGFloat>) {
         let generator = UIImpactFeedbackGenerator(style: .medium)
@@ -371,19 +399,26 @@ struct MainPickView: View {
     }
     
     private func completeMission() {
-        guard let task = currentTask else { return }
-        let record = QuirkyRecord(task: task, status: .completed)
-        modelContext.insert(record)
-        try? modelContext.save()
-        
-        triggerConfetti()
-        updateStats()
-        
-        // 위젯 업데이트 (완료 상태)
-        WidgetDataService.updateWidgetData(task: task, isCompleted: true)
-        
-        // 완료 후 최초 상태로 리셋
-        contextClearWithDelay()
+        guard let task = currentTask, !isCompleting else { return }
+        isCompleting = true
+
+        // 1. 먼저 포커스 모드 해제 (화면 밝아짐)
+        withAnimation(.easeInOut(duration: 0.35)) {
+            isDecided = false
+        }
+
+        // 2. 화면 밝아진 후 confetti + 저장
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            let record = QuirkyRecord(task: task, status: .completed)
+            modelContext.insert(record)
+            try? modelContext.save()
+
+            triggerConfetti()
+            updateStats()
+
+            WidgetDataService.updateWidgetData(task: task, isCompleted: true, language: settings.language.rawValue)
+            contextClearWithDelay()
+        }
     }
     
     private func contextClearWithDelay() {
@@ -391,6 +426,7 @@ struct MainPickView: View {
             withAnimation(.spring()) {
                 currentTask = nil
                 isDecided = false
+                isCompleting = false
                 settings.currentTaskId = 0
                 settings.currentTaskDate = nil
                 settings.isTaskDecided = false
@@ -401,8 +437,8 @@ struct MainPickView: View {
     private func passMission() {
         updateStats()
 
-        // 패스를 3번 모두 썼을 때는 반짝이기만 하고 작동 안 함
-        if todayPassed >= 3 {
+        // 패스를 2번 모두 썼을 때는 반짝이기만 하고 작동 안 함
+        if todayPassed >= 2 {
             flashPassButton()
             return
         }

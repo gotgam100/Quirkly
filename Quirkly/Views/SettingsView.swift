@@ -8,27 +8,22 @@
 import SwiftUI
 import SwiftData
 import MessageUI
-import StoreKit
-import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
-    @Environment(TaskRepository.self) private var repository
 
-    @Query private var allRecords: [QuirkyRecord]
-    
     @State private var showResetAlert = false
-    @State private var showSyncSuccess = false
     @State private var reminderTime: Date = Date()
     @State private var showMailComposer = false
     @State private var mailResult: Result<MFMailComposeResult, Error>?
-    @State private var showFileImporter = false
-    @State private var exportError: String?
     @State private var showCoffeeAlert = false
-    @State private var secretCodeSequence: [String] = []
+    @State private var versionTapCount: Int = 0
     @State private var showSecretUnlockAlert = false
-    @Environment(\.requestReview) var requestReview
+    @State private var showICloudRestartAlert = false
+    @State private var pendingICloudValue = false
+    @State private var secretTermsTapped = false
+    @State private var showWhatsNewSecret = false
     
     private var isKorean: Bool { settings.language.resolvedIsKorean }
     
@@ -41,14 +36,14 @@ struct SettingsView: View {
                     // 일반
                     languageSection
 
+                    // 데이터
+                    syncSection
+
                     // 알림
                     notificationSection
 
                     // 함께하기
                     ideaSection
-
-                    // 데이터 연동
-                    syncSection
 
                     // 앱 정보
                     aboutSection
@@ -62,19 +57,14 @@ struct SettingsView: View {
             }
             .navigationTitle(isKorean ? "설정" : "Settings")
             .navigationBarTitleDisplayMode(.large)
-            .fileImporter(
-                isPresented: $showFileImporter,
-                allowedContentTypes: [UTType.json],
-                onCompletion: { result in
-                    switch result {
-                    case .success(let url):
-                        importRecords(from: url)
-                    case .failure(let error):
-                        exportError = error.localizedDescription
-                    }
-                }
-            )
             .task {}
+            .sheet(isPresented: $showWhatsNewSecret) {
+                WhatsNewView(isKorean: isKorean) {
+                    showWhatsNewSecret = false
+                }
+                .presentationDetents([.large])
+                .interactiveDismissDisabled(true)
+            }
             .alert(
                 isKorean ? "기록 초기화" : "Reset Records",
                 isPresented: $showResetAlert
@@ -93,6 +83,27 @@ struct SettingsView: View {
                 Button(isKorean ? "확인" : "OK", role: .cancel) {}
             } message: {
                 Text(isKorean ? "마음만 받을께요. 즐거운 하루 되세요!😉" : "I appreciate your support! Thank you!")
+            }
+            .alert(
+                pendingICloudValue
+                    ? (isKorean ? "☁️ iCloud 동기화 켜기" : "☁️ Enable iCloud Sync")
+                    : (isKorean ? "☁️ iCloud 동기화 끄기" : "☁️ Disable iCloud Sync"),
+                isPresented: $showICloudRestartAlert
+            ) {
+                Button(isKorean ? "적용 (앱 재시작)" : "Apply (Restart)", role: .destructive) {
+                    ICloudSyncService.prepareMigration(modelContext: modelContext,
+                                                       enableICloud: pendingICloudValue)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { exit(0) }
+                }
+                Button(isKorean ? "취소" : "Cancel", role: .cancel) {}
+            } message: {
+                Text(pendingICloudValue
+                     ? (isKorean
+                        ? "기존 기록을 iCloud에 동기화합니다.\n앱이 재시작되며 기록은 자동으로 이전됩니다."
+                        : "Your records will be synced to iCloud.\nThe app will restart and records will be migrated.")
+                     : (isKorean
+                        ? "iCloud 동기화를 끕니다.\n앱이 재시작되며 기록은 기기에 로컬 저장됩니다."
+                        : "iCloud sync will be turned off.\nThe app will restart and records will be stored locally."))
             }
             .alert(
                 isKorean ? "🎲 다시 뽑기가 활성화되었어요!" : "🎲 Ready to pick again!",
@@ -225,9 +236,17 @@ struct SettingsView: View {
 
             // 개발자에게 커피 쏘기 (인앱 구매)
             Button {
-                checkSecretCode(action: "coffee")
-                Task {
-                    await purchaseCoffee()
+                if versionTapCount >= 5 && secretTermsTapped {
+                    // 업데이트 안내문 비밀 코드
+                    showWhatsNewSecret = true
+                    versionTapCount = 0
+                    secretTermsTapped = false
+                } else if versionTapCount >= 5 {
+                    // 다시 뽑기 비밀 코드
+                    showSecretUnlockAlert = true
+                    versionTapCount = 0
+                } else {
+                    Task { await purchaseCoffee() }
                 }
             } label: {
                 HStack {
@@ -249,77 +268,33 @@ struct SettingsView: View {
         showCoffeeAlert = true
     }
 
-    // MARK: - 데이터 연동
+    // MARK: - iCloud 동기화
 
     private var syncSection: some View {
         Section {
-            Button {
-                Task {
-                    await repository.syncFromGoogleSheets(modelContext: modelContext)
-                }
-            } label: {
-                HStack {
-                    Text(isKorean ? "📡 엉뚱한 일들 새로고침" : "📡 Refresh Quirky Tasks")
-                        .foregroundStyle(Color.quirklyTextDark)
-                    Spacer()
-                    if repository.isLoading {
-                        ProgressView()
-                    } else {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundStyle(Color.quirklyTextDark)
+            // iCloud 토글
+            HStack {
+                Text(isKorean ? "☁️ iCloud 동기화" : "☁️ iCloud Sync")
+                    .foregroundStyle(Color.quirklyTextDark)
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { settings.iCloudSyncEnabled },
+                    set: { newValue in
+                        pendingICloudValue = newValue
+                        showICloudRestartAlert = true
                     }
-                }
+                ))
+                .tint(.quirklyBlue)
+                .labelsHidden()
             }
 
-            if let error = repository.lastError {
-                Text("⚠️ \(error)")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-
-            HStack(spacing: 12) {
-                Button {
-                    exportRecords()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.up.doc")
-                        Text(isKorean ? "내보내기" : "Export")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color.quirklyTextLight)
-                    .padding(.vertical, 8)
-                    .background(Color.quirklyBlue)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
-
-                Button {
-                    showFileImporter = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.down.doc")
-                        Text(isKorean ? "가져오기" : "Import")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(Color.quirklyTextLight)
-                    .padding(.vertical, 8)
-                    .background(Color.quirklyGreen)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .buttonStyle(.plain)
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-
-            Text(isKorean ? "앱 재설치 혹은 기기 변경 전에 기록을 유지하세요." : "Back up your records before reinstalling or switching devices.")
+            Text(isKorean
+                 ? "활성화하면 기기 변경·재설치 후에도 기록이 iCloud에 안전하게 보관됩니다."
+                 : "When enabled, your records are securely stored in iCloud and survive reinstalls or device changes.")
                 .font(.caption)
                 .foregroundStyle(Color.quirklyTextDark.opacity(0.6))
 
-            if let error = exportError {
-                Text("⚠️ \(error)")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-
+            // 기록 초기화
             Button(role: .destructive) {
                 showResetAlert = true
             } label: {
@@ -330,7 +305,7 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Text(isKorean ? "데이터 연동" : "Data & Sync")
+            Text(isKorean ? "데이터" : "Data")
         }
         .listRowBackground(Color.quirkySurface.opacity(0.5))
     }
@@ -339,11 +314,16 @@ struct SettingsView: View {
 
     private var aboutSection: some View {
         Section {
-            HStack {
-                Text(isKorean ? "ℹ️ 앱 버전" : "ℹ️ App Version")
-                Spacer()
-                Text("1.0.0")
-                    .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
+            Button {
+                versionTapCount += 1
+            } label: {
+                HStack {
+                    Text(isKorean ? "ℹ️ 앱 버전" : "ℹ️ App Version")
+                        .foregroundStyle(Color.quirklyTextDark)
+                    Spacer()
+                    Text("1.1.0")
+                        .foregroundStyle(Color.quirklyTextDark.opacity(0.5))
+                }
             }
         } header: {
             Text(isKorean ? "앱 정보" : "About")
@@ -357,9 +337,12 @@ struct SettingsView: View {
         Section {
             // 이용약관
             Button {
-                checkSecretCode(action: "terms")
-                if let url = URL(string: "https://gotgam100.github.io/Quirkly/terms.html") {
-                    UIApplication.shared.open(url)
+                if versionTapCount >= 5 {
+                    secretTermsTapped = true
+                } else {
+                    if let url = URL(string: "https://gotgam100.github.io/Quirkly/terms.html") {
+                        UIApplication.shared.open(url)
+                    }
                 }
             } label: {
                 HStack {
@@ -390,7 +373,6 @@ struct SettingsView: View {
 
             // 오픈소스 라이선스
             Button {
-                checkSecretCode(action: "licenses")
                 if let url = URL(string: "https://gotgam100.github.io/Quirkly/licenses.html") {
                     UIApplication.shared.open(url)
                 }
@@ -412,19 +394,6 @@ struct SettingsView: View {
     
     // MARK: - Actions
 
-    private func checkSecretCode(action: String) {
-        secretCodeSequence.append(action)
-
-        if secretCodeSequence.count > 3 {
-            secretCodeSequence.removeFirst()
-        }
-
-        if secretCodeSequence == ["terms", "licenses", "coffee"] {
-            showSecretUnlockAlert = true
-            secretCodeSequence.removeAll()
-        }
-    }
-
     private func resetTodayTask() {
         let today = Calendar.current.startOfDay(for: Date())
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
@@ -437,9 +406,7 @@ struct SettingsView: View {
 
         if let records = try? modelContext.fetch(descriptor) {
             for record in records {
-                if record.status == .completed {
-                    modelContext.delete(record)
-                }
+                modelContext.delete(record)
             }
         }
 
@@ -448,7 +415,7 @@ struct SettingsView: View {
         settings.currentTaskId = 0
         settings.currentTaskDate = nil
         settings.isTaskDecided = false
-        WidgetDataService.updateWidgetData(task: nil, isCompleted: false)
+        WidgetDataService.updateWidgetData(task: nil, isCompleted: false, language: settings.language.rawValue)
     }
 
     private func resetAllRecords() {
@@ -456,85 +423,6 @@ struct SettingsView: View {
         try? modelContext.save()
     }
     
-    private func exportRecords() {
-        do {
-            let records = try modelContext.fetch(FetchDescriptor<QuirkyRecord>())
-            let dtos = records.map { record -> [String: Any] in
-                [
-                    "taskId": record.taskId,
-                    "taskTitleKo": record.taskTitleKo,
-                    "taskTitleEn": record.taskTitleEn,
-                    "taskEmoji": record.taskEmoji,
-                    "status": record.statusRaw,
-                    "date": record.date.timeIntervalSince1970,
-                    "category": record.taskCategoryRaw
-                ]
-            }
-
-            let jsonData = try JSONSerialization.data(withJSONObject: dtos, options: .prettyPrinted)
-            let fileName = "quirkly_records_\(Date().timeIntervalSince1970).json"
-
-            if let tempURL = FileManager.default.temporaryDirectory as NSURL? {
-                let fileURL = tempURL.appendingPathComponent(fileName)!
-                try jsonData.write(to: fileURL)
-
-                let activityVC = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = windowScene.windows.first,
-                   let rootVC = window.rootViewController {
-                    rootVC.present(activityVC, animated: true)
-                }
-
-                exportError = nil
-            }
-        } catch {
-            exportError = isKorean ? "내보내기 실패: \(error.localizedDescription)" : "Export failed: \(error.localizedDescription)"
-        }
-    }
-
-    private func importRecords(from url: URL) {
-        do {
-            let accessing = url.startAccessingSecurityScopedResource()
-            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-
-            let data = try Data(contentsOf: url)
-            guard let jsonArray = try JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
-                exportError = isKorean ? "잘못된 파일 형식입니다." : "Invalid file format"
-                return
-            }
-
-            for dto in jsonArray {
-                guard let taskId = dto["taskId"] as? Int,
-                      let taskTitleKo = dto["taskTitleKo"] as? String,
-                      let taskTitleEn = dto["taskTitleEn"] as? String,
-                      let taskEmoji = dto["taskEmoji"] as? String,
-                      let statusStr = dto["status"] as? String,
-                      let _ = RecordStatus(rawValue: statusStr),
-                      let dateInterval = dto["date"] as? TimeInterval,
-                      let categoryStr = dto["category"] as? String,
-                      let _ = TaskCategory(rawValue: categoryStr) else {
-                    continue
-                }
-
-                let record = QuirkyRecord(
-                    taskId: taskId,
-                    taskTitleKo: taskTitleKo,
-                    taskTitleEn: taskTitleEn,
-                    taskEmoji: taskEmoji,
-                    statusRaw: statusStr,
-                    date: Date(timeIntervalSince1970: dateInterval),
-                    taskCategoryRaw: categoryStr
-                )
-
-                modelContext.insert(record)
-            }
-
-            try modelContext.save()
-            exportError = nil
-        } catch {
-            exportError = isKorean ? "가져오기 실패: \(error.localizedDescription)" : "Import failed: \(error.localizedDescription)"
-        }
-    }
 }
 
 #Preview {
@@ -542,7 +430,6 @@ struct SettingsView: View {
         let container = try ModelContainer(for: QuirkyTask.self, QuirkyRecord.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
         return SettingsView()
             .environment(AppSettings())
-            .environment(TaskRepository())
             .modelContainer(container)
     } catch {
         return Text("Preview error")
